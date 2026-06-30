@@ -23,6 +23,7 @@ from sklearn.linear_model import LinearRegression
 
 
 import random
+import traceback
 #email
 import smtplib, ssl
 
@@ -294,7 +295,10 @@ def signin(request):
         email = request.POST.get('uid', '').strip()
         pass1 = request.POST.get('userpwd', '')
         try:
-            valid = UserRegister.objects.get(uid__iexact=email)
+            valid = UserRegister.objects.filter(uid__iexact=email).first()
+            if not valid:
+                messages.error(request, 'No supplier account found with this email.')
+                return render(request, 'signin1.html', {'uid': email})
             if check_password(pass1, valid.userpwd) or valid.userpwd == pass1:
                 request.session[USER_SESSION_KEY] = valid.uid
                 if valid.userpwd == pass1:
@@ -306,10 +310,10 @@ def signin(request):
                 return redirect('user:adminDashboard')
             else:
                 messages.error(request, 'Invalid email or password. Please check your login details.')
-        except UserRegister.DoesNotExist:
-            messages.error(request, 'No supplier account found with this email.')
-        except Exception:
-            messages.error(request, 'Login failed. Please try again.')
+        except Exception as exc:
+            traceback.print_exc()
+            messages.error(request, f'Login failed due to a system error: {exc}')
+        return render(request, 'signin1.html', {'uid': email})
     return render(request,'signin1.html')
 
 #User logout

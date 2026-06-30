@@ -16,6 +16,7 @@ from datetime import date
 from email.message import EmailMessage
 import random
 from difflib import SequenceMatcher
+import traceback
 #email
 import smtplib, ssl,pandas 
 import razorpay
@@ -242,10 +243,13 @@ AI Based Pharmacy System Team
 #Chemist signin page
 def chemist_signin(request):
     if request.method=="POST":
-        print(request.POST.get('cid'))
+        email = request.POST.get('cid', '').strip()
+        chemist_password = request.POST.get('chemistpwd', '')
         try:
-            chemist_password = request.POST.get('chemistpwd', '')
-            m = ChemistRegister.objects.get(cid__iexact=request.POST.get('cid', '').strip())
+            m = ChemistRegister.objects.filter(cid__iexact=email).first()
+            if not m:
+                messages.error(request, 'No chemist account found with this email.')
+                return render(request, 'chemist_signin1.html', {'cid': email})
             if check_password(chemist_password, m.chemistpwd) or m.chemistpwd == chemist_password:
                 request.session[CHEMIST_SESSION_KEY] = m.cid
                 if m.chemistpwd == chemist_password:
@@ -257,10 +261,10 @@ def chemist_signin(request):
                 return redirect('chemist:ch_index')
             else:
                 messages.error(request, 'Invalid email or password. Please check your login details.')
-        except ChemistRegister.DoesNotExist:
-            messages.error(request, 'No chemist account found with this email.')
-        except Exception:
-            messages.error(request, 'Login failed. Please try again.')
+        except Exception as exc:
+            traceback.print_exc()
+            messages.error(request, f'Login failed due to a system error: {exc}')
+        return render(request, 'chemist_signin1.html', {'cid': email})
     return render(request,'chemist_signin1.html')
 
 # Showing uploaded medicines by chemist
