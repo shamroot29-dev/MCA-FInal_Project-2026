@@ -1,5 +1,5 @@
 from django.urls import path
-from Chemist_Master.views import paymentData,PayProductOrder,PayBill,SK_Create_Pdf,SK_View_Bills,Dashboard,DeleteProduct,EditProduct,ProductListView,ReceivedStockView,order_medicine,chemist_index,chemist_signup,chemist_signin,Uploaded_Medi,update_med,delete_med,logout,forgot_pass,otpcheck,newpassword,order_medicine
+from Chemist_Master.views import paymentData,PayProductOrder,PayBill,SK_Create_Pdf,SK_View_Bills,Dashboard,DeleteProduct,EditProduct,ProductListView,ReceivedStockView,SmartMedicineFinder,order_medicine,chemist_index,chemist_signup,chemist_signin,Uploaded_Medi,update_med,delete_med,logout,forgot_pass,otpcheck,newpassword,order_medicine
 
 urlpatterns = [
     # signin,signup,indexpage
@@ -11,6 +11,7 @@ urlpatterns = [
     path('update_med/<int:id>',update_med,name='update_med'),
     path('delete_med/<int:id>',delete_med,name='delete_med'),
     path('order-medicine/',order_medicine,name='order-medicine'),
+    path('smart-medicine-finder/', SmartMedicineFinder, name='SmartMedicineFinder'),
     path('productlist/', ProductListView, name='ProductListView'),
     path('received-stock/', ReceivedStockView, name='ReceivedStockView'),
     path('dashboard/', Dashboard, name='Dashboard'),

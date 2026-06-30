@@ -21,6 +21,7 @@
       <nav class="app-nav" aria-label="Chemist navigation">
         <a href="{% url 'chemist:ch_index' %}"><span class="nav-dot">H</span>Home</a>
         <a class="active" href="{% url 'chemist:Dashboard' %}"><span class="nav-dot">D</span>Dashboard</a>
+        <a href="{% url 'chemist:SmartMedicineFinder' %}"><span class="nav-dot">A</span>Smart Finder</a>
         <a href="{% url 'chemist:order-medicine' %}"><span class="nav-dot">O</span>Order Medicine</a>
         <a href="{% url 'chemist:ProductListView' %}"><span class="nav-dot">L</span>Order List</a>
         <a href="{% url 'chemist:ReceivedStockView' %}"><span class="nav-dot">R</span>Received Stock</a>
@@ -54,6 +55,7 @@
             <p class="hero-text">This dashboard shows your placed stock requests, their current status, and links to generated bills once supplier processing is complete.</p>
             <div class="hero-actions">
               <a class="action-link" href="{% url 'chemist:order-medicine' %}">Place New Order</a>
+              <a class="action-link secondary" href="{% url 'chemist:SmartMedicineFinder' %}">Compare Suppliers</a>
               <a class="action-link secondary" href="{% url 'chemist:ProductListView' %}">View Order List</a>
             </div>
           </div>

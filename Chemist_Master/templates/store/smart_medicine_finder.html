@@ -1,0 +1,234 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Smart Supplier Comparison | AI Based Pharmacy System</title>
+  <link rel="stylesheet" type="text/css" href="{% static 'css/project-polish.css' %}">
+</head>
+<body>
+  <div class="app-shell">
+    <aside class="app-sidebar">
+      <div class="app-brand">
+        <div class="app-brand-mark">C</div>
+        <div>
+          <p class="app-brand-title">Chemist Portal</p>
+          <p class="app-brand-subtitle">Store workspace</p>
+        </div>
+      </div>
+
+      <nav class="app-nav" aria-label="Chemist navigation">
+        <a href="{% url 'chemist:ch_index' %}"><span class="nav-dot">H</span>Home</a>
+        <a href="{% url 'chemist:Dashboard' %}"><span class="nav-dot">D</span>Dashboard</a>
+        <a class="active" href="{% url 'chemist:SmartMedicineFinder' %}"><span class="nav-dot">A</span>Smart Finder</a>
+        <a href="{% url 'chemist:order-medicine' %}"><span class="nav-dot">O</span>Order Medicine</a>
+        <a href="{% url 'chemist:ProductListView' %}"><span class="nav-dot">L</span>Order List</a>
+        <a href="{% url 'chemist:ReceivedStockView' %}"><span class="nav-dot">R</span>Received Stock</a>
+        <a href="{% url 'chemist:Uploaded_Medi' %}"><span class="nav-dot">M</span>Medicine Guide</a>
+        <a class="logout-link" href="{% url 'chemist:logout' %}"><span class="nav-dot">X</span>Logout</a>
+      </nav>
+    </aside>
+
+    <main class="app-main">
+      <header class="app-topbar">
+        <div>
+          <p class="topbar-kicker">Chemist portal</p>
+          <h1 class="topbar-title">Smart Supplier Comparison</h1>
+        </div>
+        <div class="user-chip">Logged in as <span>{{ username }}</span></div>
+      </header>
+
+      <div class="app-content">
+        {% if messages %}
+        <div class="message-stack">
+          {% for message in messages %}
+          <div class="app-alert {{ message.tags }}">{{ message }}</div>
+          {% endfor %}
+        </div>
+        {% endif %}
+
+        <section class="hero-panel">
+          <div class="hero-card">
+            <p class="hero-eyebrow">AI decision support</p>
+            <h2 class="hero-title">Compare supplier stock, rate, quantity, and reliability before ordering.</h2>
+            <p class="hero-text">Search a medicine and enter required quantity. The system ranks suppliers using price, stock availability, previous acceptance history, payment/bill history, and medicine match quality.</p>
+          </div>
+
+          <div class="notice-card">
+            <h3>Scoring logic</h3>
+            <ul class="notice-list">
+              <li>Lower rate improves price score.</li>
+              <li>Enough stock improves availability score.</li>
+              <li>Accepted orders and generated bills improve reliability.</li>
+              <li>Direct Order opens the normal payment/order flow.</li>
+            </ul>
+          </div>
+        </section>
+
+        <section class="content-card">
+          <div class="card-heading">
+            <div>
+              <h2>Find Available Suppliers</h2>
+              <p>Use medicine name and quantity to get a ranked comparison.</p>
+            </div>
+            <a class="action-link secondary" href="{% url 'chemist:order-medicine' %}">Manual Order</a>
+          </div>
+
+          <form class="medicine-searchbar smart-searchbar" method="GET">
+            <div class="medicine-search-input">
+              <span aria-hidden="true">Medicine</span>
+              <input type="search" name="q" value="{{ query }}" placeholder="Example: Cetrizine, Paracetamol, Dolo...">
+            </div>
+            <div class="medicine-search-input compact-input">
+              <span aria-hidden="true">Qty</span>
+              <input type="number" name="quantity" min="1" max="500" value="{{ requested_qty }}">
+            </div>
+            <select name="sort" class="smart-sort" aria-label="Sort supplier results">
+              <option value="recommended"{% if sort_by == 'recommended' %} selected{% endif %}>Recommended</option>
+              <option value="price"{% if sort_by == 'price' %} selected{% endif %}>Lowest Rate</option>
+              <option value="stock"{% if sort_by == 'stock' %} selected{% endif %}>Highest Stock</option>
+              <option value="reliability"{% if sort_by == 'reliability' %} selected{% endif %}>Reliability</option>
+            </select>
+            <button class="action-button" type="submit">Compare</button>
+            {% if query %}
+            <a class="action-link secondary" href="{% url 'chemist:SmartMedicineFinder' %}">Clear</a>
+            {% endif %}
+          </form>
+        </section>
+
+        <section class="metric-grid">
+          <div class="metric-card">
+            <p class="metric-label">Matching suppliers</p>
+            <p class="metric-value">{{ available_suppliers }}</p>
+          </div>
+          <div class="metric-card">
+            <p class="metric-label">Enough stock</p>
+            <p class="metric-value">{{ enough_stock_count }}</p>
+          </div>
+          <div class="metric-card">
+            <p class="metric-label">Lowest rate</p>
+            <p class="metric-value">Rs. {{ cheapest_rate }}</p>
+          </div>
+        </section>
+
+        {% if recommended %}
+        <section class="content-card recommendation-panel">
+          <div class="card-heading">
+            <div>
+              <h2>Recommended Supplier</h2>
+              <p>{{ recommended.supplier_email }} has the best combined score for this search.</p>
+            </div>
+            {% if recommended.enough_stock %}
+            <a class="action-link" href="{% url 'chemist:order-medicine' %}?supplier={{ recommended.supplier_id }}&product={{ recommended.stock_id }}&quantity={{ requested_qty }}">Order This</a>
+            {% endif %}
+          </div>
+          <div class="recommendation-grid">
+            <div>
+              <span class="status-pill accepted">Score {{ recommended.score }}/100</span>
+              {% for badge in recommended.badges %}
+              <span class="status-pill neutral">{{ badge }}</span>
+              {% endfor %}
+              <h3>{{ recommended.medicine }}</h3>
+              <p>Rate Rs. {{ recommended.rate }} | Available {{ recommended.available_qty }} units | Net Rs. {{ recommended.net_price }}</p>
+            </div>
+            <div class="score-stack">
+              <div><span>Price</span><strong>{{ recommended.price_score }}</strong></div>
+              <div><span>Stock</span><strong>{{ recommended.stock_score }}</strong></div>
+              <div><span>Reliability</span><strong>{{ recommended.reliability_score }}</strong></div>
+              <div><span>Match</span><strong>{{ recommended.match_score }}</strong></div>
+            </div>
+          </div>
+        </section>
+        {% endif %}
+
+        <section class="content-card">
+          <div class="card-heading">
+            <div>
+              <h2>Supplier Comparison</h2>
+              <p>{{ total_matches }} stock record{{ total_matches|pluralize }} found{% if query %} for "{{ query }}"{% endif %}.</p>
+            </div>
+          </div>
+
+          {% if results %}
+          <div class="table-shell">
+            <table class="data-table smart-table">
+              <thead>
+                <tr>
+                  <th>Rank</th>
+                  <th>Supplier</th>
+                  <th>Medicine</th>
+                  <th>Available Qty</th>
+                  <th>Rate</th>
+                  <th>Net Price</th>
+                  <th>AI Score</th>
+                  <th>Reliability</th>
+                  <th>Badges</th>
+                  <th>Action</th>
+                </tr>
+              </thead>
+              <tbody>
+                {% for row in results %}
+                <tr>
+                  <td>{{ forloop.counter }}</td>
+                  <td>{{ row.supplier_email }}</td>
+                  <td>{{ row.medicine }}</td>
+                  <td>
+                    {{ row.available_qty }}
+                    {% if row.enough_stock %}
+                    <div class="field-help">Enough for {{ requested_qty }} units</div>
+                    {% else %}
+                    <div class="field-error">Only {{ row.available_qty }} available</div>
+                    {% endif %}
+                  </td>
+                  <td>Rs. {{ row.rate }}</td>
+                  <td>Rs. {{ row.net_price }}</td>
+                  <td>
+                    <strong>{{ row.score }}/100</strong>
+                    <div class="score-meter"><span style="width: {{ row.score }}%;"></span></div>
+                  </td>
+                  <td>
+                    <span class="status-pill neutral">{{ row.reliability_label }}</span>
+                    <div class="field-help">{{ row.accepted_orders }} accepted | {{ row.bill_count }} bills</div>
+                  </td>
+                  <td>
+                    <div class="table-actions">
+                      {% for badge in row.badges %}
+                      <span class="status-pill {% if badge == 'Insufficient Qty' %}pending{% else %}accepted{% endif %}">{{ badge }}</span>
+                      {% empty %}
+                      <span class="status-pill neutral">Compared</span>
+                      {% endfor %}
+                    </div>
+                  </td>
+                  <td>
+                    {% if row.enough_stock %}
+                    <a class="action-link" href="{% url 'chemist:order-medicine' %}?supplier={{ row.supplier_id }}&product={{ row.stock_id }}&quantity={{ requested_qty }}">Order</a>
+                    {% else %}
+                    <span class="status-pill pending">Not enough stock</span>
+                    {% endif %}
+                  </td>
+                </tr>
+                {% endfor %}
+              </tbody>
+            </table>
+          </div>
+          {% else %}
+          <div class="empty-state">
+            No exact medicine stock matched this search. Please check the spelling or choose a suggested medicine.
+            {% if suggestions %}
+            <br>
+            Did you mean:
+            {% for item in suggestions %}
+            <a href="{% url 'chemist:SmartMedicineFinder' %}?q={{ item|urlencode }}&quantity={{ requested_qty }}">{{ item }}</a>{% if not forloop.last %}, {% endif %}
+            {% endfor %}
+            <br>
+            Suggestions are not orderable until you open one and get supplier stock comparison.
+            {% endif %}
+          </div>
+          {% endif %}
+        </section>
+      </div>
+    </main>
+  </div>
+</body>
+</html>

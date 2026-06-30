@@ -15,6 +15,7 @@ from django.contrib import messages
 from datetime import date
 from email.message import EmailMessage
 import random
+from difflib import SequenceMatcher
 #email
 import smtplib, ssl,pandas 
 import razorpay
@@ -42,6 +43,178 @@ PAID_PAYMENT_STATUSES = ('Demo Paid', 'Razorpay Paid', 'Paid')
 
 def is_payment_paid(payment_status):
     return payment_status in PAID_PAYMENT_STATUSES
+
+
+def clamp_score(value):
+    return max(0, min(100, round(value)))
+
+
+def medicine_match_score(query, medicine_name):
+    if not query:
+        return 100
+    query_text = query.lower().strip()
+    medicine_text = medicine_name.lower().strip()
+    if not query_text:
+        return 100
+    if query_text == medicine_text:
+        return 100
+    if query_text in medicine_text:
+        return 90
+    return round(SequenceMatcher(None, query_text, medicine_text).ratio() * 100)
+
+
+def is_orderable_medicine_match(query, medicine_name):
+    if not query:
+        return True
+    query_text = query.lower().strip()
+    medicine_text = medicine_name.lower().strip()
+    return query_text == medicine_text or query_text in medicine_text
+
+
+def supplier_reliability_score(supplier):
+    orders = ProductDetails.objects.filter(supplier=supplier)
+    bills = SK_Bills.objects.filter(supplier=supplier)
+    order_count = orders.count()
+    bill_count = bills.count()
+    if not order_count and not bill_count:
+        return {
+            'score': 65,
+            'label': 'New supplier history',
+            'accepted_orders': 0,
+            'bills': 0,
+        }
+
+    accepted_orders = orders.filter(status=True).count()
+    denied_orders = orders.filter(isDeny=True).count()
+    paid_bills = bills.exclude(payment_status='Pending').count()
+
+    accepted_ratio = accepted_orders / order_count if order_count else 0
+    denied_ratio = denied_orders / order_count if order_count else 0
+    paid_ratio = paid_bills / bill_count if bill_count else 0
+    score = 55 + (accepted_ratio * 30) + (paid_ratio * 15) - (denied_ratio * 20)
+    score = clamp_score(score)
+
+    if score >= 85:
+        label = 'Highly reliable'
+    elif score >= 70:
+        label = 'Reliable'
+    elif score >= 55:
+        label = 'Moderate history'
+    else:
+        label = 'Review before ordering'
+
+    return {
+        'score': score,
+        'label': label,
+        'accepted_orders': accepted_orders,
+        'bills': bill_count,
+    }
+
+
+def build_supplier_comparison(stocks, query, requested_qty):
+    if not stocks:
+        return []
+
+    prices = [float(stock.price) for stock in stocks if stock.price is not None]
+    quantities = [int(stock.quantity) for stock in stocks]
+    min_price = min(prices) if prices else 0
+    max_price = max(prices) if prices else min_price
+    reliability_cache = {}
+    rows = []
+
+    for stock in stocks:
+        supplier = stock.supplier
+        if supplier.id not in reliability_cache:
+            reliability_cache[supplier.id] = supplier_reliability_score(supplier)
+        reliability = reliability_cache[supplier.id]
+
+        price = float(stock.price)
+        quantity = int(stock.quantity)
+        enough_stock = requested_qty <= quantity
+        if max_price == min_price:
+            price_score = 100
+        else:
+            price_score = 100 - ((price - min_price) / (max_price - min_price) * 100)
+        stock_score = min(100, (quantity / requested_qty) * 100) if requested_qty else 100
+        availability_penalty = 0 if enough_stock else 35
+        match_score = medicine_match_score(query, stock.productName)
+        total_score = (
+            (price_score * 0.35) +
+            (stock_score * 0.25) +
+            (reliability['score'] * 0.25) +
+            (match_score * 0.15) -
+            availability_penalty
+        )
+
+        rows.append({
+            'stock_id': stock.id,
+            'supplier_id': supplier.id,
+            'supplier_email': supplier.uid,
+            'medicine': stock.productName,
+            'available_qty': quantity,
+            'rate': price,
+            'net_price': round(price * requested_qty, 2),
+            'requested_qty': requested_qty,
+            'enough_stock': enough_stock,
+            'score': clamp_score(total_score),
+            'price_score': clamp_score(price_score),
+            'stock_score': clamp_score(stock_score),
+            'match_score': match_score,
+            'reliability_score': reliability['score'],
+            'reliability_label': reliability['label'],
+            'accepted_orders': reliability['accepted_orders'],
+            'bill_count': reliability['bills'],
+            'badges': [],
+        })
+
+    eligible_rows = [row for row in rows if row['enough_stock']]
+    scoring_rows = eligible_rows or rows
+    if scoring_rows:
+        best_price = min(scoring_rows, key=lambda row: row['rate'])
+        highest_stock = max(scoring_rows, key=lambda row: row['available_qty'])
+        recommended = max(scoring_rows, key=lambda row: row['score'])
+        best_price['badges'].append('Best Price')
+        highest_stock['badges'].append('Highest Stock')
+        recommended['badges'].insert(0, 'Recommended')
+        for row in rows:
+            if row['reliability_score'] >= 85:
+                row['badges'].append('Trusted Supplier')
+            if not row['enough_stock']:
+                row['badges'].append('Insufficient Qty')
+
+    return sorted(rows, key=lambda row: (row['enough_stock'], row['score'], -row['rate']), reverse=True)
+
+
+def suggest_similar_medicines(query, stocks):
+    if not query:
+        return []
+    ranked = {}
+    for stock in stocks:
+        score = medicine_match_score(query, stock.productName)
+        current = ranked.get(stock.productName)
+        if current is None or score > current:
+            ranked[stock.productName] = score
+    return [
+        name for name, score in sorted(ranked.items(), key=lambda item: item[1], reverse=True)
+        if score >= 60
+    ][:6]
+
+
+def get_order_form_context(username, request):
+    suppliers = UserRegister.objects.all().order_by('uid')
+    prods = StockDetails.objects.filter(
+        supplier__isnull=False,
+        quantity__gt=0
+    ).select_related('supplier').order_by('supplier__uid', 'productName')
+    return {
+        'username': username,
+        'prods': prods,
+        'suppliers': suppliers,
+        'selected_supplier': request.GET.get('supplier') or request.POST.get('supplier', ''),
+        'selected_product': request.GET.get('product') or request.POST.get('productname', ''),
+        'selected_quantity': request.GET.get('quantity') or request.POST.get('productquantity', ''),
+        'selected_date': request.GET.get('date') or request.POST.get('data', ''),
+    }
 
 
 def build_otp_email(email_user, recipient_email, otp, account_type):
@@ -339,8 +512,7 @@ def order_medicine(request):
     if CHEMIST_SESSION_KEY in request.session:
 
         username = request.session[CHEMIST_SESSION_KEY]
-        suppliers = UserRegister.objects.all().order_by('uid')
-        prods = StockDetails.objects.filter(supplier__isnull=False, quantity__gt=0).order_by('supplier__uid', 'productName')
+        context = get_order_form_context(username, request)
         if request.POST:
             try:
                 supplier_id = int(request.POST['supplier'])
@@ -351,19 +523,19 @@ def order_medicine(request):
                 pro_nm = StockDetails.objects.get(id=pro_data, supplier=supplier, quantity__gt=0)
             except (KeyError, ValueError, UserRegister.DoesNotExist, StockDetails.DoesNotExist):
                 messages.error(request, 'Please select a valid supplier, medicine, and quantity.')
-                return render(request, 'store/addproduct.html', {'username': username, 'prods': prods, 'suppliers': suppliers})
+                return render(request, 'store/addproduct.html', context)
 
             if pro_qty <= 0 or pro_qty > 500:
                 messages.error(request, 'Quantity should be between 1 and 500.')
-                return render(request, 'store/addproduct.html', {'username': username, 'prods': prods, 'suppliers': suppliers})
+                return render(request, 'store/addproduct.html', context)
 
             if pro_qty > pro_nm.quantity:
                 messages.error(request, f"Only {pro_nm.quantity} units of {pro_nm.productName} are available.")
-                return render(request, 'store/addproduct.html', {'username': username, 'prods': prods, 'suppliers': suppliers})
+                return render(request, 'store/addproduct.html', context)
 
             if not prod_date:
                 messages.error(request, 'Please select a request date.')
-                return render(request, 'store/addproduct.html', {'username': username, 'prods': prods, 'suppliers': suppliers})
+                return render(request, 'store/addproduct.html', context)
 
             total = float(pro_nm.price) * pro_qty
             payment_timing = request.POST.get('payment_timing', 'later')
@@ -386,12 +558,73 @@ def order_medicine(request):
                 save_pending_order(request, 'Pending')
             except ValueError as exc:
                 messages.error(request, str(exc))
-                return render(request, 'store/addproduct.html', {'username': username, 'prods': prods, 'suppliers': suppliers})
+                return render(request, 'store/addproduct.html', context)
             messages.success(request, 'Order request placed with payment pending. You can pay before or after supplier billing.')
             return redirect('chemist:ProductListView')
-        return render(request, 'store/addproduct.html', {'username': username, 'prods': prods, 'suppliers': suppliers})
+        return render(request, 'store/addproduct.html', context)
     else:
         return redirect('chemist:ch_signin')
+
+
+def SmartMedicineFinder(request):
+    if CHEMIST_SESSION_KEY not in request.session:
+        return redirect('chemist:ch_signin')
+
+    username = request.session[CHEMIST_SESSION_KEY]
+    query = request.GET.get('q', '').strip()
+    sort_by = request.GET.get('sort', 'recommended')
+    try:
+        requested_qty = int(request.GET.get('quantity', '1') or 1)
+    except ValueError:
+        requested_qty = 1
+    requested_qty = max(1, min(requested_qty, 500))
+
+    all_stocks = list(
+        StockDetails.objects.filter(
+            supplier__isnull=False,
+            quantity__gt=0
+        ).select_related('supplier').order_by('productName', 'supplier__uid')
+    )
+
+    candidate_stocks = []
+    suggestions = []
+    if query:
+        candidate_stocks = [
+            stock for stock in all_stocks
+            if is_orderable_medicine_match(query, stock.productName)
+        ]
+        if not candidate_stocks:
+            suggestions = suggest_similar_medicines(query, all_stocks)
+    else:
+        candidate_stocks = all_stocks[:20]
+
+    results = build_supplier_comparison(candidate_stocks, query, requested_qty)
+
+    if sort_by == 'price':
+        results = sorted(results, key=lambda row: (not row['enough_stock'], row['rate']))
+    elif sort_by == 'stock':
+        results = sorted(results, key=lambda row: row['available_qty'], reverse=True)
+    elif sort_by == 'reliability':
+        results = sorted(results, key=lambda row: row['reliability_score'], reverse=True)
+
+    recommended = results[0] if results else None
+    available_suppliers = len({row['supplier_id'] for row in results})
+    cheapest_rate = min([row['rate'] for row in results], default=0)
+    enough_stock_count = len([row for row in results if row['enough_stock']])
+
+    return render(request, 'store/smart_medicine_finder.html', {
+        'username': username,
+        'query': query,
+        'requested_qty': requested_qty,
+        'sort_by': sort_by,
+        'results': results,
+        'recommended': recommended,
+        'suggestions': suggestions,
+        'available_suppliers': available_suppliers,
+        'cheapest_rate': cheapest_rate,
+        'enough_stock_count': enough_stock_count,
+        'total_matches': len(results),
+    })
     
 def paymentData(request):
 	if ORDER_TOTAL_SESSION_KEY not in request.session or PENDING_ORDER_SESSION_KEY not in request.session:

@@ -21,7 +21,6 @@ myenv1/
 # Runtime/generated files
 staticfiles/
 media/
-db.sqlite3
 
 # Generated reports and local browser automation profiles
 reports/

@@ -21,6 +21,7 @@
       <nav class="app-nav" aria-label="Chemist navigation">
         <a href="{% url 'chemist:ch_index' %}"><span class="nav-dot">H</span>Home</a>
         <a href="{% url 'chemist:Dashboard' %}"><span class="nav-dot">D</span>Dashboard</a>
+        <a href="{% url 'chemist:SmartMedicineFinder' %}"><span class="nav-dot">A</span>Smart Finder</a>
         <a class="active" href="{% url 'chemist:order-medicine' %}"><span class="nav-dot">O</span>Order Medicine</a>
         <a href="{% url 'chemist:ProductListView' %}"><span class="nav-dot">L</span>Order List</a>
         <a href="{% url 'chemist:ReceivedStockView' %}"><span class="nav-dot">R</span>Received Stock</a>
@@ -82,7 +83,7 @@
                   {% if suppliers %}
                   <option value="">Select supplier</option>
                   {% for supplier in suppliers %}
-                  <option value="{{ supplier.id }}">{{ supplier.uid }}</option>
+                  <option value="{{ supplier.id }}"{% if selected_supplier == supplier.id|stringformat:"s" %} selected{% endif %}>{{ supplier.uid }}</option>
                   {% endfor %}
                   {% else %}
                   <option value="">No supplier available</option>
@@ -93,10 +94,10 @@
 
               <div>
                 <label for="id_productname">Medicine</label>
-                <select name="productname" id="id_productname" required>
+                <select name="productname" id="id_productname" data-selected-product="{{ selected_product }}" required>
                   {% if prods %}
                   {% for i in prods %}
-                  <option value="{{ i.id }}" data-supplier="{{ i.supplier_id }}" data-stock="{{ i.quantity }}">{{ i.productName }} - Qty {{ i.quantity }} - Rate {{ i.price }}</option>
+                  <option value="{{ i.id }}" data-supplier="{{ i.supplier_id }}" data-stock="{{ i.quantity }}"{% if selected_product == i.id|stringformat:"s" %} selected{% endif %}>{{ i.productName }} - Qty {{ i.quantity }} - Rate {{ i.price }}</option>
                   {% endfor %}
                   {% else %}
                   <option value="">No stock available</option>
@@ -106,12 +107,12 @@
 
               <div>
                 <label for="id_data">Request Date</label>
-                <input type="date" name="data" id="id_data" required>
+                <input type="date" name="data" id="id_data" value="{{ selected_date }}" required>
               </div>
 
               <div>
                 <label for="id_productquantity">Quantity</label>
-                <input type="number" name="productquantity" id="id_productquantity" min="1" max="500" maxlength="3" placeholder="Enter quantity" required>
+                <input type="number" name="productquantity" id="id_productquantity" min="1" max="500" maxlength="3" value="{{ selected_quantity }}" placeholder="Enter quantity" required>
                 <div class="field-help" id="stock_hint">Select a medicine to see available quantity.</div>
               </div>
 
@@ -157,6 +158,7 @@
           return;
         }
         var selectedSupplier = supplierSelect.value;
+        var selectedProduct = medicineSelect.getAttribute('data-selected-product') || medicineSelect.value;
         var firstVisibleIndex = -1;
         for (var i = 0; i < medicineSelect.options.length; i += 1) {
           var option = medicineSelect.options[i];
@@ -164,7 +166,9 @@
           var isVisible = selectedSupplier && optionSupplier === selectedSupplier;
           option.hidden = !isVisible;
           option.disabled = !isVisible;
-          if (isVisible && firstVisibleIndex === -1) {
+          if (isVisible && option.value === selectedProduct) {
+            firstVisibleIndex = i;
+          } else if (isVisible && firstVisibleIndex === -1) {
             firstVisibleIndex = i;
           }
         }

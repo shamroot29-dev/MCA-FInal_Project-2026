@@ -21,6 +21,7 @@
       <nav class="app-nav" aria-label="Chemist navigation">
         <a class="active" href="{% url 'chemist:ch_index' %}"><span class="nav-dot">H</span>Home</a>
         <a href="{% url 'chemist:Dashboard' %}"><span class="nav-dot">D</span>Dashboard</a>
+        <a href="{% url 'chemist:SmartMedicineFinder' %}"><span class="nav-dot">A</span>Smart Finder</a>
         <a href="{% url 'chemist:order-medicine' %}"><span class="nav-dot">O</span>Order Medicine</a>
         <a href="{% url 'chemist:ProductListView' %}"><span class="nav-dot">L</span>Order List</a>
         <a href="{% url 'chemist:ReceivedStockView' %}"><span class="nav-dot">R</span>Received Stock</a>
@@ -54,6 +55,7 @@
             <p class="hero-text">Use this portal to place stock requests, check whether orders are pending or accepted, and open previous bill records without searching through old pages.</p>
             <div class="hero-actions">
               <a class="action-link" href="{% url 'chemist:Dashboard' %}">Open Dashboard</a>
+              <a class="action-link secondary" href="{% url 'chemist:SmartMedicineFinder' %}">Smart Finder</a>
               <a class="action-link secondary" href="{% url 'chemist:order-medicine' %}">Order Medicine</a>
             </div>
           </div>
@@ -62,6 +64,7 @@
             <h3>Page guide</h3>
             <ul class="notice-list">
               <li>Dashboard shows order status and bill links.</li>
+              <li>Smart Finder compares supplier rate, stock, and reliability.</li>
               <li>Order Medicine creates a new stock request.</li>
               <li>Medicine Guide lists reference medicine details.</li>
             </ul>
