@@ -1,0 +1,163 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Payment Confirmation | AI Based Pharmacy System</title>
+  <link rel="stylesheet" type="text/css" href="{% static 'css/project-polish.css' %}">
+</head>
+<body>
+  <div class="app-shell">
+    <aside class="app-sidebar">
+      <div class="app-brand">
+        <div class="app-brand-mark">C</div>
+        <div>
+          <p class="app-brand-title">Chemist Portal</p>
+          <p class="app-brand-subtitle">Store workspace</p>
+        </div>
+      </div>
+
+      <nav class="app-nav" aria-label="Chemist navigation">
+        <a href="{% url 'chemist:ch_index' %}"><span class="nav-dot">H</span>Home</a>
+        <a href="{% url 'chemist:Dashboard' %}"><span class="nav-dot">D</span>Dashboard</a>
+        <a class="active" href="{% url 'chemist:order-medicine' %}"><span class="nav-dot">O</span>Order Medicine</a>
+        <a href="{% url 'chemist:ProductListView' %}"><span class="nav-dot">L</span>Order List</a>
+        <a href="{% url 'chemist:ReceivedStockView' %}"><span class="nav-dot">R</span>Received Stock</a>
+        <a href="{% url 'chemist:Uploaded_Medi' %}"><span class="nav-dot">M</span>Medicine Guide</a>
+        <a class="logout-link" href="{% url 'chemist:logout' %}"><span class="nav-dot">X</span>Logout</a>
+      </nav>
+    </aside>
+
+    <main class="app-main">
+      <header class="app-topbar">
+        <div>
+          <p class="topbar-kicker">Chemist portal</p>
+          <h1 class="topbar-title">Payment Confirmation</h1>
+        </div>
+      </header>
+
+      <div class="app-content">
+        {% if messages %}
+        <div class="message-stack">
+          {% for message in messages %}
+          <div class="app-alert {{ message.tags }}">{{ message }}</div>
+          {% endfor %}
+        </div>
+        {% endif %}
+
+        <section class="hero-panel">
+          <div class="hero-card">
+            <p class="hero-eyebrow">Confirm order</p>
+            <h2 class="hero-title">{{ payment_title|default:"Complete payment for this medicine request." }}</h2>
+            <p class="hero-text">{{ payment_text|default:"Use Razorpay Test Mode or local demo payment to complete the project flow." }}</p>
+          </div>
+
+          <div class="notice-card">
+            <h3>Payment mode</h3>
+            {% if razorpay_key_id %}
+            <p>Razorpay Test Mode is configured. Use test card/UPI details in the checkout popup, or use local demo payment for offline presentation.</p>
+            {% else %}
+            <p>Razorpay keys are not configured. Use demo payment to complete the project flow without external setup.</p>
+            {% endif %}
+            {% if razorpay_error %}
+            <p class="field-error">{{ razorpay_error }}</p>
+            {% endif %}
+          </div>
+        </section>
+
+        <section class="content-card">
+          <div class="card-heading">
+            <div>
+              <h2>Order Summary</h2>
+              <p>Review the request before confirming payment.</p>
+            </div>
+          </div>
+
+          <div class="table-shell">
+            <table class="data-table">
+              <thead>
+                <tr>
+                  <th>Medicine</th>
+                  <th>Supplier</th>
+                  <th>Quantity</th>
+                  <th>Rate</th>
+                  <th>Request Date</th>
+                  <th>Total</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>{{ order.product_name }}</td>
+                  <td>{{ order.supplier_email }}</td>
+                  <td>{{ order.quantity }}</td>
+                  <td>{{ order.rate }}</td>
+                  <td>{{ order.date }}</td>
+                  <td>{{ order.total }}</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+          <form method="POST" class="payment-actions" id="payment_form">
+            {% csrf_token %}
+            <input type="hidden" name="razorpay_payment_id" id="razorpay_payment_id">
+            <input type="hidden" name="razorpay_order_id" id="razorpay_order_id" value="{{ razorpay_order_id }}">
+            <input type="hidden" name="razorpay_signature" id="razorpay_signature">
+            {% if razorpay_key_id and razorpay_order_id %}
+            <button type="button" class="action-button" id="razorpay_button">Pay with Razorpay Test Mode</button>
+            {% else %}
+            {% endif %}
+            <button type="submit" class="action-link secondary" name="demo_payment" value="1">Complete Local Demo Payment</button>
+            <a class="action-link secondary" href="{% url 'chemist:order-medicine' %}">Change Order</a>
+          </form>
+        </section>
+      </div>
+    </main>
+  </div>
+  {% if razorpay_key_id and razorpay_order_id %}
+  <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+  <script>
+    (function () {
+      var razorpayButton = document.getElementById('razorpay_button');
+      var paymentForm = document.getElementById('payment_form');
+      if (!razorpayButton || !paymentForm) {
+        return;
+      }
+
+      var options = {
+        key: "{{ razorpay_key_id }}",
+        amount: "{{ donationAmount }}",
+        currency: "INR",
+        name: "AI Based Pharmacy System",
+        description: "{{ order.product_name }} order payment",
+        order_id: "{{ razorpay_order_id }}",
+        prefill: {
+          name: "Chemist",
+          email: "{{ username|default:'' }}"
+        },
+        theme: {
+          color: "#0f766e"
+        },
+        handler: function (response) {
+          document.getElementById('razorpay_payment_id').value = response.razorpay_payment_id;
+          document.getElementById('razorpay_order_id').value = response.razorpay_order_id;
+          document.getElementById('razorpay_signature').value = response.razorpay_signature;
+          paymentForm.submit();
+        },
+        modal: {
+          ondismiss: function () {
+            return true;
+          }
+        }
+      };
+
+      razorpayButton.addEventListener('click', function () {
+        var checkout = new Razorpay(options);
+        checkout.open();
+      });
+    })();
+  </script>
+  {% endif %}
+</body>
+</html>

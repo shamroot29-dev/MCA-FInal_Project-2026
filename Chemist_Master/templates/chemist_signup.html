@@ -1,0 +1,112 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Chemist Signup | AI Based Pharmacy System</title>
+  <link rel="stylesheet" type="text/css" href="{% static 'css/project-polish.css' %}">
+</head>
+<body>
+  <main class="auth-page">
+    <form method="POST" enctype="multipart/form-data" class="auth-card auth-card-wide" novalidate>
+      {% csrf_token %}
+      <div class="auth-brand">
+        <div class="auth-eyebrow">Chemist Registration</div>
+        <h1 class="auth-title">Register Your Store</h1>
+        <p class="auth-subtitle">Create a chemist profile to order stock and track supplier approvals.</p>
+      </div>
+
+      {% if messages %}
+      <div class="message-stack">
+        {% for message in messages %}
+          <div class="app-alert {{ message.tags }}">{{ message }}</div>
+        {% endfor %}
+      </div>
+      {% endif %}
+
+      {% if obj.errors %}
+      <div class="app-alert error">Please review the highlighted fields below.</div>
+      {% endif %}
+
+      <div class="form-grid">
+        <div class="field">
+          <label for="id_cid">Email</label>
+          <input id="id_cid" type="email" name="cid" value="{{ obj.cid.value|default_if_none:'' }}" required{% if obj.cid.errors %} class="field-invalid" aria-describedby="id_cid_error"{% endif %}>
+          {% if obj.cid.errors %}
+          <div id="id_cid_error" class="field-error">{{ obj.cid.errors.0 }}</div>
+          {% endif %}
+        </div>
+        <div class="field">
+          <label for="id_chemistpwd">Password</label>
+          <input id="id_chemistpwd" type="password" name="chemistpwd" required{% if obj.chemistpwd.errors %} class="field-invalid" aria-describedby="id_chemistpwd_error"{% endif %}>
+          {% if obj.chemistpwd.errors %}
+          <div id="id_chemistpwd_error" class="field-error">{{ obj.chemistpwd.errors.0 }}</div>
+          {% endif %}
+        </div>
+        <div class="field">
+          <label for="id_chemistfname">First Name</label>
+          <input id="id_chemistfname" type="text" name="chemistfname" value="{{ obj.chemistfname.value|default_if_none:'' }}" required{% if obj.chemistfname.errors %} class="field-invalid" aria-describedby="id_chemistfname_error"{% endif %}>
+          {% if obj.chemistfname.errors %}
+          <div id="id_chemistfname_error" class="field-error">{{ obj.chemistfname.errors.0 }}</div>
+          {% endif %}
+        </div>
+        <div class="field">
+          <label for="id_chemistmname">Middle Name <span class="field-optional">(Optional)</span></label>
+          <input id="id_chemistmname" type="text" name="chemistmname" value="{{ obj.chemistmname.value|default_if_none:'' }}"{% if obj.chemistmname.errors %} class="field-invalid" aria-describedby="id_chemistmname_error"{% endif %}>
+          {% if obj.chemistmname.errors %}
+          <div id="id_chemistmname_error" class="field-error">{{ obj.chemistmname.errors.0 }}</div>
+          {% endif %}
+        </div>
+        <div class="field">
+          <label for="id_chemistlname">Last Name</label>
+          <input id="id_chemistlname" type="text" name="chemistlname" value="{{ obj.chemistlname.value|default_if_none:'' }}" required{% if obj.chemistlname.errors %} class="field-invalid" aria-describedby="id_chemistlname_error"{% endif %}>
+          {% if obj.chemistlname.errors %}
+          <div id="id_chemistlname_error" class="field-error">{{ obj.chemistlname.errors.0 }}</div>
+          {% endif %}
+        </div>
+        <div class="field">
+          <label for="id_chemistaddress">Address</label>
+          <input id="id_chemistaddress" type="text" name="chemistaddress" value="{{ obj.chemistaddress.value|default_if_none:'' }}" required{% if obj.chemistaddress.errors %} class="field-invalid" aria-describedby="id_chemistaddress_error"{% endif %}>
+          {% if obj.chemistaddress.errors %}
+          <div id="id_chemistaddress_error" class="field-error">{{ obj.chemistaddress.errors.0 }}</div>
+          {% endif %}
+        </div>
+        <div class="field">
+          <label for="id_chemistcity">City</label>
+          <input id="id_chemistcity" type="text" name="chemistcity" value="{{ obj.chemistcity.value|default_if_none:'' }}" required{% if obj.chemistcity.errors %} class="field-invalid" aria-describedby="id_chemistcity_error"{% endif %}>
+          {% if obj.chemistcity.errors %}
+          <div id="id_chemistcity_error" class="field-error">{{ obj.chemistcity.errors.0 }}</div>
+          {% endif %}
+        </div>
+        <div class="field">
+          <label for="id_chemistpincode">Pincode</label>
+          <input id="id_chemistpincode" type="number" name="chemistpincode" value="{{ obj.chemistpincode.value|default_if_none:'' }}" required{% if obj.chemistpincode.errors %} class="field-invalid" aria-describedby="id_chemistpincode_error"{% endif %}>
+          {% if obj.chemistpincode.errors %}
+          <div id="id_chemistpincode_error" class="field-error">{{ obj.chemistpincode.errors.0 }}</div>
+          {% endif %}
+        </div>
+        <div class="field">
+          <label for="id_chemistcontactno">Contact Number</label>
+          <input id="id_chemistcontactno" type="number" name="chemistcontactno" value="{{ obj.chemistcontactno.value|default_if_none:'' }}" required{% if obj.chemistcontactno.errors %} class="field-invalid" aria-describedby="id_chemistcontactno_error"{% endif %}>
+          {% if obj.chemistcontactno.errors %}
+          <div id="id_chemistcontactno_error" class="field-error">{{ obj.chemistcontactno.errors.0 }}</div>
+          {% endif %}
+        </div>
+        <div class="field">
+          <label for="id_chemistphoto">Store Certificate <span class="field-optional">(Optional)</span></label>
+          <input id="id_chemistphoto" type="file" name="chemistphoto"{% if obj.chemistphoto.errors %} class="field-invalid" aria-describedby="id_chemistphoto_error"{% endif %}>
+          {% if obj.chemistphoto.errors %}
+          <div id="id_chemistphoto_error" class="field-error">{{ obj.chemistphoto.errors.0 }}</div>
+          {% endif %}
+        </div>
+      </div>
+
+      <div class="action-row">
+        <button type="submit" class="auth-submit">Create Account</button>
+        <a class="btn-secondary-soft" href="{% url 'chemist:ch_signin' %}">Already have an account?</a>
+      </div>
+    </form>
+  </main>
+</body>
+</html>

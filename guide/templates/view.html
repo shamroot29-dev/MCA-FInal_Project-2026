@@ -1,0 +1,41 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>{{ key.mname }} | Medicine Guide</title>
+  <link rel="stylesheet" type="text/css" href="{% static 'css/project-polish.css' %}">
+</head>
+<body>
+  <main class="page-wrap">
+    <header class="page-header">
+      <div>
+        <h1 class="page-title">{{ key.mname }}</h1>
+        <p class="page-subtitle">{{ key.drug }} | {{ key.category }}</p>
+      </div>
+      <a class="btn-secondary-soft" href="{% url 'guide:csv' %}">Back to Guide</a>
+    </header>
+
+    <section class="responsive-card">
+      <div class="table-responsive-clean">
+        <table>
+          <tr><th>Symptoms</th><td>{{ key.symptoms }}</td></tr>
+          <tr><th>Diseases</th><td>{{ key.diseases }}</td></tr>
+          <tr><th>Type</th><td>{{ key.category }}</td></tr>
+          <tr><th>Unit</th><td>{{ key.unit }}</td></tr>
+          <tr><th>Unit Price</th><td>{{ key.unit_price }}</td></tr>
+          <tr><th>Package Unit</th><td>{{ key.package_unit }}</td></tr>
+          <tr><th>Package Price</th><td>{{ key.package_price }}</td></tr>
+          <tr><th>Drug Name</th><td>{{ key.drug }}</td></tr>
+          <tr><th>Per Unit</th><td>{{ key.per_unit }}</td></tr>
+          <tr><th>Indication</th><td>{{ key.indication }}</td></tr>
+          <tr><th>Contraindication</th><td>{{ key.contraindication }}</td></tr>
+          <tr><th>Caution</th><td>{{ key.caution }}</td></tr>
+          <tr><th>Side Effect</th><td>{{ key.side_effect }}</td></tr>
+        </table>
+      </div>
+    </section>
+  </main>
+</body>
+</html>

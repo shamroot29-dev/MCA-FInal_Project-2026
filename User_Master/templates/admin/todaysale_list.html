@@ -1,0 +1,73 @@
+{% extends 'admin/adminbase.html' %}
+{% load static %}
+{% block content %}
+        <!-- ============================================================== -->
+        <!-- Page Content -->
+        <!-- ============================================================== -->
+        <div id="page-wrapper">
+            <div class="container-fluid">
+                <div class="row bg-title">
+                    <div class="col-lg-3 col-md-4 col-sm-4 col-xs-12">
+                        <h4 class="page-title">Today List</h4> </div>
+                        <div >
+                             </div>
+                    
+                    <!-- /.col-lg-12 -->
+                </div>
+             
+               
+                <!-- ============================================================== -->
+                <!-- table -->
+                <!-- ============================================================== -->
+                <div class="row">
+                    <div class="col-md-12 col-lg-12 col-sm-12">
+                        <div class="white-box">
+                            
+                           <h3 class="box-title">Today Products Sold</h3>
+                               
+                           
+                            
+                            <div class="table-responsive">
+                                <table class="table">
+                                    <thead>
+                                        <tr>
+                                            <th>Date</th>
+                                            <th>Medicine Name</th>
+                                            <th>Quantity</th>
+                                            <th>TotalPrice</th>
+                                            
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                      {% for i in todaydata %}
+                                        <tr>
+                                            <td>{{ i.date }}</td>
+                                            <td class="txt-oflo">{{ i.productname }}</td>
+                                            <td>{{ i.qty }}</td>
+                                            <td>{{ i.totalprice }}</td>
+                                          
+                                        </tr>
+                                     {% endfor %}
+
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!-- ============================================================== -->
+                <!-- chat-listing & recent comments -->
+                <!-- ============================================================== -->
+                
+            
+            <!-- /.container-fluid -->
+        </div>
+        <!-- ============================================================== -->
+        <!-- End Page Content -->
+        <!-- ============================================================== -->
+    </div>
+    <!-- ============================================================== -->
+    <!-- End Wrapper -->
+    <!-- ============================================================== -->
+
+{% endblock %}

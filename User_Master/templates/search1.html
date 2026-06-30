@@ -1,0 +1,78 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Medicine Search | AI Based Pharmacy System</title>
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css">
+  <link rel="stylesheet" type="text/css" href="{% static 'css/project-polish.css' %}">
+</head>
+<body>
+  <main class="page-wrap">
+    <header class="page-header">
+      <div>
+        <h1 class="page-title">Medicine Search Results</h1>
+        <p class="page-subtitle">Review medicine details and add selected medicines to your wishlist.</p>
+      </div>
+      <a class="btn-secondary-soft" href="{% url 'user:Userindex' %}">Back to Dashboard</a>
+    </header>
+
+    {% if messages %}
+    <div class="message-stack">
+      {% for message in messages %}
+        <div class="app-alert {{ message.tags }}">{{ message }}</div>
+      {% endfor %}
+    </div>
+    {% endif %}
+
+    <section class="responsive-card">
+      {% if med %}
+      <div class="table-responsive-clean">
+        <table class="table table-bordered">
+          <thead>
+            <tr>
+              <th>Medicine</th>
+              <th>Symptoms</th>
+              <th>Diseases</th>
+              <th>Drug</th>
+              <th>Category</th>
+              <th>Unit</th>
+              <th>Unit Price</th>
+              <th>Package</th>
+              <th>Package Price</th>
+              <th>Action</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for i in med %}
+            <tr>
+              <td>{{ i.mname }}</td>
+              <td>{{ i.symptoms }}</td>
+              <td>{{ i.diseases }}</td>
+              <td>{{ i.drug }}</td>
+              <td>{{ i.category }}</td>
+              <td>{{ i.unit }}</td>
+              <td>{{ i.unit_price }}</td>
+              <td>{{ i.package_unit }}</td>
+              <td>{{ i.package_price }}</td>
+              <td>
+                <form action="{% url 'user:cart' %}" method="POST">
+                  {% csrf_token %}
+                  <input type="hidden" value="{{ i.id }}" name="mid">
+                  <input type="hidden" value="1" name="qty">
+                  <button type="submit" class="btn-primary-soft">Add</button>
+                </form>
+              </td>
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+      {% else %}
+      <div class="app-alert info">No medicines matched your search. Try searching by medicine name, symptom, disease, or drug name.</div>
+      {% endif %}
+    </section>
+  </main>
+</body>
+</html>

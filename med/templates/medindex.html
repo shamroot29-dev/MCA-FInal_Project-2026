@@ -1,0 +1,500 @@
+<!-- <!DOCTYPE html>  
+
+ <html lang="en"> 
+
+<head>  
+  
+<meta charset="UTF-8">  
+    
+<title>Index</title>  
+    
+{% load static %}  
+    
+<link rel="stylesheet" href="{% static 'css/style.css' %}"/>
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-eOJMYsd53ii+scO/bJGFsiCZc+5NDVN2yr8+0RDqr0Ql0h+rP48ckxlpbzKgwra6" crossorigin="anonymous">
+  
+<style>
+  body{
+    margin: 0;
+    padding: 0;
+    font-family: sans-serif;
+    /* background-image:  url('/static/img/mypill.jpg'); */
+    background: rgb(58, 58, 57);
+  }
+
+  .box input[type = "text"],input[type="number"],select[id = id_chemist],select[id="id_formulation"]{
+    border:0;
+    background-color: blanchedalmond;
+    display: block;
+    margin: 20px auto;
+    text-align: center;
+    border: 2px solid #3498db;
+    padding: 10px 10px;
+    width: 200px;
+    outline: none;
+    color: rgb(26, 25, 25);
+    border-radius: 24px;
+    transition: 0.25s;
+  }
+  .box{
+            width:unset;
+    padding:inherit;
+  
+  margin-bottom:initial;
+    text-align: center;
+    
+   
+  }
+ 
+  /*.box{
+  width: 500px;
+  padding: 40px;
+  min-height:345px;
+  margin-bottom: 200px;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%,-50%);
+  
+  text-align: center;
+  height: 650px;
+
+} */
+
+
+
+  .box label[for=id_mname],label[for=id_symptoms],label[for=id_diseases],label[for=id_category],label[for=id_unit]
+  ,label[for=id_unit_price],label[for=id_package_unit],label[for=id_package_price],label[for=id_drug]
+  ,label[for=id_per_unit],label[for=id_indication],label[for=id_contraindication],label[for=id_caution],label[for=id_side_effect]{
+               font-style: italic;
+               font-family: Verdana, Geneva, Tahoma, sans-serif;
+               color: black;
+           }
+.button
+{
+    border: none;
+    outline: none;
+    
+    background: #1c8adb;
+    
+    font-size: 15px;
+    border-radius: 8px;
+    padding: 10px 24px;
+    background-color: white; 
+  color: black; 
+  border: 2px solid #4ca8af;
+}
+.button:hover
+{
+    cursor: pointer;
+    background: #4ca8af;
+    color: rgb(250, 253, 249);
+}
+.h3-tag {
+  /* font-size: 30px;
+  color: #fff;
+  text-align: center;
+  -webkit-animation: h3-tag 1s ease-in-out infinite alternate;
+  -moz-animation: h3-tag 1s ease-in-out infinite alternate;
+  animation: h3-tag 1s ease-in-out infinite alternate; */
+  padding-bottom: 30px;
+  text-shadow: 1px 1px 2px black, 0 0 25px blue, 0 0 5px darkblue;
+  color: white;
+}
+
+/* @-webkit-keyframes h3-tag {
+  from {
+    text-shadow: 0 0 10px #fff, 0 0 20px #fff, 0 0 30px #15e453, 0 0 40px  #15e453, 0 0 50px #15e453, 0 0 60px #15e453, 0 0 70px #15e453;
+  }
+  
+  to {
+    text-shadow: 0 0 20px #fff, 0 0 30px #ff4da6, 0 0 40px #ff4da6, 0 0 50px #ff4da6, 0 0 60px #ff4da6, 0 0 70px #ff4da6, 0 0 80px #ff4da6;
+  }
+} */
+table {
+  font-family: arial, sans-serif;
+  border-collapse: collapse;
+  width: 100%;
+}
+
+td, th {
+  
+  text-align: center;
+  padding: 8px;
+}
+
+tr:nth-child(even) {
+  background-color: #dddddd;
+}
+
+</style>
+
+<link rel="stylesheet" type="text/css" href="{% static 'css/project-polish.css' %}">
+</head>  
+
+<body >  
+  
+<div class="book-appoinement">
+  <center>
+  
+      
+      <div class="bg-form">
+          
+        <form method="POST" class="box"> 
+      {% csrf_token %}
+      
+  
+
+   <h1 class="h3-tag">Add New Medicine</h1>
+  <center>
+    <table>
+      
+      <tr>
+        <td>
+       <label for="id_mname">Medicine_Name:</label> 
+       <input type="text" class="form-control" name="mname" maxlength="30" required id="id_mname">
+      </td>
+     <td>
+       <label for="id_symptoms">Symptoms:</label> 
+       <input type="text"  class="form-control"name="symptoms" maxlength="1000" required id="id_symptoms">
+      </td>
+     <td>
+       <label for="id_diseases">Diseases:</label>
+        <input type="text" class="form-control" name="diseases" maxlength="1000" required id="id_diseases">
+      </td>
+      </tr>
+   
+      <tr>
+          <td>
+       <label for="id_category">Type:</label> 
+       <input type="text" name="category" maxlength="50" required id="id_category">
+      </td>
+     <td>
+       <label for="id_unit">Unit:</label>
+        <input type="text" name="unit" maxlength="10" required id="id_unit">
+      </td>
+     <td>
+       <label for="id_unit_price">Unit_price:</label>
+        <input type="number" name="unit_price" step="any" required id="id_unit_price">
+      </td>
+      </tr>
+     <tr>
+      <td>
+       <label for="id_package_unit">Package_Unit:</label> 
+       <input type="text" name="package_unit" maxlength="10" required id="id_package_unit">
+      </td>
+     <td>
+       <label for="id_package_price">Package_price:</label> 
+       <input type="number" name="package_price" step="any" required id="id_package_price">
+      </td>
+     <td>
+       <label for="id_drug">Drug_Name:</label> 
+       <input type="text" name="drug" maxlength="20" required id="id_drug">
+      </td>
+      </tr>
+     
+      <tr>
+        <td>
+       <label for="id_per_unit">Per_unit:</label> 
+       <input type="text" name="per_unit" maxlength="10" required id="id_per_unit">
+      </td>
+     <td>
+       <label for="id_indication">Indication:</label>
+        <input type="text" name="indication" maxlength="100" required id="id_indication">
+      </td>
+     <td>
+       <label for="id_contraindication">Containdication:</label>
+        <input type="text" name="contraindication" maxlength="100" required id="id_contraindication">
+      </td>
+      </tr>
+      <tr>
+        <td>
+       <label for="id_caution">Caution:</label> 
+       <input type="text" name="caution" maxlength="500" required id="id_caution">
+      </td>
+     <td>
+       <label for="id_side_effect">Side-Effect:</label>
+        <input type="text" name="side_effect" maxlength="500" required id="id_side_effect">
+      </td>
+
+      </tr>
+      </table>
+    </center>
+
+        <a href="{% url 'chemist:Uploaded_Medi' %}" class="btn btn-outline-success" onclick="return confirm('Are you sure you want to add medicine?')">Submit</a>
+        <a href="{% url 'chemist:Uploaded_Medi' %}" class="btn btn-outline-warning" style="background-color: cornsilk;" >Back</a>
+      
+      </form>
+  
+
+</center>
+
+</body>  
+</html>   -->
+
+
+
+
+
+<html>
+    <head>
+      <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/css/bootstrap.min.css" integrity="sha384-TX8t27EcRE3e/ihU7zmQxVncDAy5uIKz4rEkgIXeMed4M0jlfIDPvg6uqKI2xXr2" crossorigin="anonymous">
+ 
+        <style>
+          
+body {
+  margin:0;
+  padding:0;
+  font-family: sans-serif;
+  background: linear-gradient(#141e30, #243b55);
+}
+
+.login-box {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 400px;
+  margin-top: 290px;
+  padding: 40px;
+  transform: translate(-50%, -50%);
+  background: rgba(0,0,0,.5);
+  box-sizing: border-box;
+  box-shadow: 0 15px 25px rgba(0,0,0,.6);
+  border-radius: 10px;
+}
+
+.login-box h2 {
+  margin: 0 0 30px;
+  padding: 0;
+  color: #fff;
+  text-align: center;
+}
+
+.login-box .user-box {
+  position: relative;
+}
+
+.login-box .user-box input {
+  width: 100%;
+  padding: 10px 0;
+  font-size: 16px;
+  color: #fff;
+  margin-bottom: 30px;
+  border: none;
+  border-bottom: 1px solid #fff;
+  outline: none;
+  background: transparent;
+}
+.login-box .user-box label {
+  position: absolute;
+  top:0;
+  left: 0;
+  padding: 10px 0;
+  font-size: 16px;
+  color: #fff;
+  pointer-events: none;
+  transition: .5s;
+}
+
+.login-box .user-box input:focus ~ label,
+.login-box .user-box input:valid ~ label {
+  top: -20px;
+  left: 0;
+  color: #03e9f4;
+  font-size: 12px;
+}
+
+.login-box form button {
+    background: linear-gradient(#141e30, #243b55);
+  position: relative;
+  display: inline-block;
+  padding: 10px 20px;
+  color: #03e9f4;
+  font-size: 16px;
+  text-decoration: none;
+  text-transform: uppercase;
+  overflow: hidden;
+  transition: .5s;
+  margin-top: 40px;
+  letter-spacing: 4px
+}
+
+.login-box button:hover {
+  background: #03e9f4;
+  color: #fff;
+  border-radius: 5px;
+  box-shadow: 0 0 5px #03e9f4,
+              0 0 25px #03e9f4,
+              0 0 50px #03e9f4,
+              0 0 100px #03e9f4;
+}
+
+.login-box button span {
+  position: absolute;
+  display: block;
+}
+
+.login-box button span:nth-child(1) {
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 2px;
+  background: linear-gradient(90deg, transparent, #03e9f4);
+  animation: btn-anim1 1s linear infinite;
+}
+
+@keyframes btn-anim1 {
+  0% {
+    left: -100%;
+  }
+  50%,100% {
+    left: 100%;
+  }
+}
+
+.login-box button span:nth-child(2) {
+  top: -100%;
+  right: 0;
+  width: 2px;
+  height: 100%;
+  background: linear-gradient(180deg, transparent, #03e9f4);
+  animation: btn-anim2 1s linear infinite;
+  animation-delay: .25s
+}
+
+@keyframes btn-anim2 {
+  0% {
+    top: -100%;
+  }
+  50%,100% {
+    top: 100%;
+  }
+}
+
+.login-box button span:nth-child(3) {
+  bottom: 0;
+  right: -100%;
+  width: 100%;
+  height: 2px;
+  background: linear-gradient(270deg, transparent, #03e9f4);
+  animation: btn-anim3 1s linear infinite;
+  animation-delay: .5s
+}
+
+@keyframes btn-anim3 {
+  0% {
+    right: -100%;
+  }
+  50%,100% {
+    right: 100%;
+  }
+}
+
+.login-box button span:nth-child(4) {
+  bottom: -100%;
+  left: 0;
+  width: 2px;
+  height: 100%;
+  background: linear-gradient(360deg, transparent, #03e9f4);
+  animation: btn-anim4 1s linear infinite;
+  animation-delay: .75s
+}
+
+@keyframes btn-anim4 {
+  0% {
+    bottom: -100%;
+  }
+  50%,100% {
+    bottom: 100%;
+  }
+}
+a{
+  margin-left: 90px;
+    padding: 10px 16px;
+    width: 90px;
+}
+        </style>
+    
+<link rel="stylesheet" type="text/css" href="{% static 'css/project-polish.css' %}">
+</head>
+    <body>
+      <div class="login-box">
+        <h2>ADD Medicine</h2>
+        <!-- <div><a  href="{% url 'chemist:ch_index' %}" style=" margin-left : 100px ;color: white; background-color: black;">Back</a></div>         -->
+    <form method="POST">
+        {% csrf_token %}
+      <div class="user-box">
+        <input type="text" name="mname" required="">
+        <label>Medicine_Name</label>
+      </div>
+      <div class="user-box">
+        <input type="text"name="symptoms" required="">
+        <label>Symptoms</label>
+      </div>
+      <div class="user-box">
+        <input type="text" name="diseases" required="">
+        <label>Diseases</label>
+      </div>
+      <div class="user-box">
+        <input type="text" name="category" required="">
+        <label>Type</label>
+      </div>
+      <div class="user-box">
+        <input type="text" name="unit"required="">
+        <label>Unit</label>
+      </div>
+      <div class="user-box">
+        <input type="number" name="unit_price"  required="">
+        <label>Unit_price</label>
+      </div>
+      <div class="user-box">
+        <input type="text" name="package_unit" required="">
+        <label>Package_Unit</label>
+      </div>
+      <div class="user-box">
+        <input type="number" name="package_price" required="">
+        <label>Package_price</label>
+      </div>
+      <div class="user-box">
+        <input type="text" name="drug" required="">
+        <label>Drug_Name</label>
+      </div>
+      <div class="user-box">
+        <input type="text" name="per_unit" required="">
+        <label>Per_unit</label>
+      </div>
+      <div class="user-box">
+        <input type="text" name="indication" required="">
+        <label>Indication</label>
+      </div>
+      <div class="user-box">
+        <input type="text" name="contraindication" required="">
+        <label>Containdication</label>
+      </div>
+      <div class="user-box">
+        <input type="text" name="caution" required="">
+        <label>Caution</label>
+      </div>
+      <div class="user-box">
+        <input type="text" name="side_effect" required="">
+        <label>Side-Effect</label>
+      </div>
+      
+      <button class="button" type="submit">
+        <span></span>
+        <span></span>
+        <span></span>
+        <span></span>
+          Submit
+        </button> 
+        <a href="{% url 'chemist:ch_index' %}" class="btn btn-outline-danger">
+            <span></span>
+          <span></span>
+          <span></span>
+          <span></span>
+                Back</a>
+    </form>
+  </div>
+</body>
+
+  </html>

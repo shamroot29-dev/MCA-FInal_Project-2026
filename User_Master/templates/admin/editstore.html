@@ -1,0 +1,59 @@
+{% load static %}
+<!DOCTYPE html>
+ 
+<html lang="en" dir="ltr">
+
+<head>
+    <meta charset="UTF-8">
+    <!--<title> Responsiive Admin Dashboard | CodingLab </title>-->
+    <link rel="stylesheet" type="text/css" href="{% static 'css/box.css' %}">
+    <link rel="stylesheet" type="text/css" href="{% static 'css/project-polish.css' %}">
+    <!-- Boxicons CDN Link -->
+    <link href='https://unpkg.com/boxicons@2.0.7/css/boxicons.min.css' rel='stylesheet'>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+</head>
+
+<body style="background-image: url('/static/img/Do.jpg');">
+  
+  <br><br><br>
+<div >
+<div class="container" style="border: 1px solid white; box-shadow: 1px 4px 2px white; padding: 25px; margin-left:10%; width: 80%;">
+    <h1 style="color: white; text-align: center;">Edit pharmacist</h1><br>
+<form method="POST">
+    {% csrf_token %}
+    <div class="form-group" style="text-align: center;">
+      <label  style="color:rgb(247, 244, 244); font-weight: bold;">Pharmacist name:</label>  
+<br>
+     <input type="text" placeholder="Enter first name" class="form-control" name="chemistfname" id="id_chemistfname" style="width: 40%; padding: 8px;" value="{{ shop.chemistfname }}">
+     </div>
+
+    <div class="form-group"style="text-align: center;">
+      <label  style="color:rgb(247, 244, 244); font-weight: bold;">Middle Name:</label>  
+      <br>
+      <input type="text" placeholder="Enter middle name" class="form-control" name="chemistmname" id="id_chemistmname" style="width: 40%; padding: 8px;" value="{{ shop.chemistmname }}">
+    </div>
+    <div class="form-group"style="text-align: center;">
+      <label  style="color:rgb(247, 244, 244); font-weight: bold;">Email:</label>  
+      <br>
+        <input type="email" placeholder="Enter email " class="form-control" name="cid" id="id_cid" style="width: 40%; padding: 8px;" value="{{ shop.cid }}">
+      </div>
+    <div class="form-group"style="text-align: center;">
+      <label  style="color:rgb(247, 244, 244); font-weight: bold;">Contact Number:</label>  
+      <br>
+        <input type="tel" placeholder="Enter contact number" class="form-control" name="chemistcontactno" id="id_chemistcontactno" style="width: 40%; padding: 8px;" value="{{ shop.chemistcontactno }}">
+      </div>
+      <div class="form-group"style="text-align: center;">
+        <label  style="color:rgb(247, 244, 244); font-weight: bold;">Address:</label>  
+      <br>
+        <input type="text" placeholder="Enter address" class="form-control" name="chemistaddress" id="id_chemistaddress" style="width: 40%; padding: 8px;" value="{{ shop.chemistaddress }}">
+      </div>
+      <div class="form-group"style="text-align: center;">
+        <label  style="color:rgb(247, 244, 244); font-weight: bold;">Area:</label>  
+      <br>
+        <input type="text" placeholder="Enter area" class="form-control" name="chemistarea" id="id_chemistarea" style="width: 40%; padding: 8px;" value="{{ shop.chemistarea }}">
+      </div>
+      <br>
+    <button type="submit"  style="margin-left: 520px; background-color: rgb(78, 247, 56);padding: 3px;">Save changes</button>
+  </form> 
+  </div>
+</body>

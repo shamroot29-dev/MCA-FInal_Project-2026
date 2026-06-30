@@ -1,0 +1,276 @@
+{% load static %}
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>AI Based Pharmacy System</title>
+    <link
+      rel="stylesheet"
+      type="text/css"
+      href="{% static 'css/font-awesome.min.css' %}"
+    />
+    <link
+      rel="stylesheet"
+      type="text/css"
+      href="{% static 'css/project-polish.css' %}"
+    />
+  </head>
+  <body class="landing-page">
+    <header class="landing-nav">
+      <a class="landing-brand" href="{% url 'user:index' %}">
+        <img
+          src="{% static 'img/logo.png' %}"
+          alt="AI Based Pharmacy System logo"
+        />
+        <span>AI Based Pharmacy System</span>
+      </a>
+
+      <input class="nav-toggle" type="checkbox" id="nav-toggle" />
+      <label
+        class="nav-toggle-label"
+        for="nav-toggle"
+        aria-label="Open navigation"
+      >
+        <span></span>
+        <span></span>
+        <span></span>
+      </label>
+
+      <nav class="landing-menu" aria-label="Main navigation">
+        <a href="#features">Features</a>
+        <a href="#workflow">Workflow</a>
+        <a href="#contact">Contact</a>
+        <a href="{% url 'user:signin' %}">Supplier Login</a>
+        <a class="menu-cta" href="{% url 'chemist:ch_signin' %}"
+          >Chemist Login</a
+        >
+      </nav>
+    </header>
+
+    <main>
+      <section class="landing-hero">
+        <div class="hero-copy reveal-up">
+          <p class="hero-kicker">AI enabled pharmacy operations</p>
+          <h1>AI Based Pharmacy System</h1>
+          <p class="hero-lead">
+            A complete Django-based pharmacy platform with AI demand
+            forecasting, smart stock recommendation, supplier stock management,
+            chemist ordering, medicine guidance, billing, and payment tracking.
+          </p>
+          <div class="hero-cta-row">
+            <a class="hero-primary" href="{% url 'user:signin' %}"
+              >Open Supplier Portal</a
+            >
+            <a class="hero-secondary" href="{% url 'chemist:ch_signin' %}"
+              >Open Chemist Portal</a
+            >
+          </div>
+        </div>
+
+        <div class="hero-showcase reveal-up">
+          <div class="showcase-card">
+            <div class="showcase-topline">
+              <span>AI Stock</span>
+              <strong>Forecast</strong>
+            </div>
+            <div class="showcase-bars">
+              <span style="--bar-width: 88%"></span>
+              <span style="--bar-width: 64%"></span>
+              <span style="--bar-width: 76%"></span>
+            </div>
+            <div class="showcase-metrics">
+              <div>
+                <strong>AI Alerts</strong>
+                <span>Low stock status</span>
+              </div>
+              <div>
+                <strong>Demand</strong>
+                <span>Monthly forecast</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="landing-stats" aria-label="Project highlights">
+        <div class="stat-tile reveal-up">
+          <strong>2</strong>
+          <span>Role-based portals</span>
+        </div>
+        <div class="stat-tile reveal-up">
+          <strong>24/7</strong>
+          <span>AI assisted medicine lookup</span>
+        </div>
+        <div class="stat-tile reveal-up">
+          <strong>ML</strong>
+          <span>Demand forecasting module</span>
+        </div>
+        <div class="stat-tile reveal-up">
+          <strong>PDF</strong>
+          <span>Invoice and payment flow</span>
+        </div>
+      </section>
+
+      <section class="landing-section" id="features">
+        <div class="section-heading reveal-up">
+          <p class="section-kicker">What it handles</p>
+          <h2>Designed for real pharmacy workflows with visible AI support</h2>
+          <p>
+            AI Based Pharmacy System connects supplier and chemist operations
+            while using historical bill data to forecast demand and recommend
+            stock levels.
+          </p>
+        </div>
+
+        <div class="feature-grid">
+          <article class="feature-card reveal-up">
+            <i class="fa fa-archive"></i>
+            <h3>AI Smart Stock</h3>
+            <p>
+              Supplier can maintain stock while the system highlights predicted
+              demand, suggested stock, low-stock alerts, and reorder quantity.
+            </p>
+          </article>
+          <article class="feature-card reveal-up">
+            <i class="fa fa-shopping-cart"></i>
+            <h3>Chemist Ordering</h3>
+            <p>
+              Chemist can place stock requests, select supplier, choose payment
+              timing, view order status, and track supplier response.
+            </p>
+          </article>
+          <article class="feature-card reveal-up">
+            <i class="fa fa-file-text-o"></i>
+            <h3>Billing And Payment</h3>
+            <p>
+              Accepted orders can be converted into professional invoices with
+              pending/paid payment status visible to both roles.
+            </p>
+          </article>
+          <article class="feature-card reveal-up">
+            <i class="fa fa-line-chart"></i>
+            <h3>AI Demand Forecasting</h3>
+            <p>
+              Historical generated bills are used for monthly trend prediction,
+              confidence scoring, and actionable stock recommendations.
+            </p>
+          </article>
+        </div>
+      </section>
+
+      <section class="workflow-band" id="workflow">
+        <div class="section-heading reveal-up">
+          <p class="section-kicker">Simple flow</p>
+          <h2>From stock request to AI-guided replenishment</h2>
+        </div>
+
+        <div class="workflow-grid">
+          <div class="workflow-step reveal-up">
+            <span>01</span>
+            <h3>Chemist places request</h3>
+            <p>
+              The chemist selects medicine, date, and quantity from the portal.
+            </p>
+          </div>
+          <div class="workflow-step reveal-up">
+            <span>02</span>
+            <h3>Supplier reviews AI stock status</h3>
+            <p>
+              The supplier checks availability, AI forecast, suggested stock,
+              and accepts requests that can be fulfilled.
+            </p>
+          </div>
+          <div class="workflow-step reveal-up">
+            <span>03</span>
+            <h3>Bill and prediction data update</h3>
+            <p>
+              Accepted orders become invoices and feed future AI demand
+              forecasting for better inventory planning.
+            </p>
+          </div>
+        </div>
+      </section>
+
+      <section class="landing-section role-section">
+        <div class="role-card supplier-role reveal-up">
+          <p class="section-kicker">Supplier</p>
+          <h2>Manage inventory with AI stock guidance.</h2>
+          <p>
+            Use the supplier dashboard to maintain stock, inspect chemist
+            orders, generate bills, view payment status, and use AI demand
+            forecasts.
+          </p>
+          <a class="hero-primary" href="{% url 'user:signin' %}"
+            >Supplier Login</a
+          >
+        </div>
+        <div class="role-card chemist-role reveal-up">
+          <p class="section-kicker">Chemist</p>
+          <h2>Order medicines and use assisted medicine lookup.</h2>
+          <p>
+            Use the chemist portal to place requests, view order status, access
+            AI-assisted medicine reference search, complete payments, and review
+            bills.
+          </p>
+          <a class="hero-secondary" href="{% url 'chemist:ch_signin' %}"
+            >Chemist Login</a
+          >
+        </div>
+      </section>
+
+      <section class="contact-band" id="contact">
+        <div class="contact-panel reveal-up">
+          <div>
+            <p class="section-kicker">Contact</p>
+            <h2>Need to present or test the project?</h2>
+            <p>
+              Use the login buttons above to open the working supplier and
+              chemist modules. For project queries, contact the demo support
+              details below.
+            </p>
+          </div>
+          <div class="contact-list">
+            <p>
+              <i class="fa fa-map-marker"></i> Lake Rd, near Swami Vivekanand
+              Sarovar, Hindpiri, Ranchi, Jharkhand 834001
+            </p>
+            <p><i class="fa fa-envelope-o"></i> aibasedpharmacy@gmail.com</p>
+            <p><i class="fa fa-phone"></i> +91 7979769437</p>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <footer class="landing-footer">
+      <div>
+        <strong>AI Based Pharmacy System</strong>
+        <p>
+          Final year MCA project for pharmacy stock, order, billing, and
+          prediction management.
+        </p>
+      </div>
+      <div class="footer-links">
+        <a href="#features">Features</a>
+        <a href="{% url 'user:signin' %}">Supplier</a>
+        <a href="{% url 'chemist:ch_signin' %}">Chemist</a>
+      </div>
+    </footer>
+
+    <script>
+      const revealItems = document.querySelectorAll(".reveal-up");
+      const revealObserver = new IntersectionObserver(
+        (entries) => {
+          entries.forEach((entry) => {
+            if (entry.isIntersecting) {
+              entry.target.classList.add("is-visible");
+            }
+          });
+        },
+        { threshold: 0.14 },
+      );
+
+      revealItems.forEach((item) => revealObserver.observe(item));
+    </script>
+  </body>
+</html>

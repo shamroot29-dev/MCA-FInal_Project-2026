@@ -1,0 +1,118 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.6/css/bootstrap.min.css"
+        integrity="sha384-rwoIResjU2yc3z8GV/NPeZWAv56rSmLldC3R/AZzGRnGxQQKnKkoFVhFQhNUwEyJ" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+
+    <style>
+        .card {
+            box-shadow: rgba(0, 0, 0, 0.4) 0px 2px 4px, rgba(0, 0, 0, 0.3) 0px 7px 13px -3px, rgba(0, 0, 0, 0.2) 0px -3px 0px inset;
+            border-radius: 7px;
+            padding: 2rem
+        }
+
+        .btn-success {
+            background-color: #5bc0de;
+            border: #5bc0de;
+        }
+
+        .btn-success:hover {
+            background-color: #48a4c0;
+            border: #48a4c0;
+        }
+    </style>
+
+<link rel="stylesheet" type="text/css" href="{% static 'css/project-polish.css' %}">
+</head>
+
+
+<body>
+    <div>
+        <nav class="navbar navbar-toggleable navbar-info bg-info" id="nav-main">
+            <a class="navbar-brand" href="{% url 'homepage' %}"><img src="{% static 'image/logo_child.png' %}"
+                    width="50" height="50px" alt="Logo"></a>
+            <ul class="nav navbar-nav mr-auto">
+
+                <li class="nav-item active">
+                    <a class="nav-link text-white" href="{% url 'homepage' %}">HOME<span
+                            class="sr-only">(current)</span> </a>
+                </li>
+                <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle  text-white" id="navbarDropdownMenuLink" data-toggle="dropdown"
+                        aria-haspopup="true" aria-expanded="false">
+                        Chid Care Institutes
+                    </a>
+                    <div class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
+                        <a class="dropdown-item" href="{% url 'Children_Homes' %}">Children Homes</a>
+                        <a class="dropdown-item" href="{% url 'Special_Homes' %}">Special Homes</a>
+                        <a class="dropdown-item" href="{% url 'Observation_Homes' %}">Obesrvation Homes</a>
+                        <a class="dropdown-item" href="{% url 'Place_For_Safety' %}">Places of Safety</a>
+                    </div>
+                </li>
+                <li class="nav-item ">
+                    <a class="nav-link text-white" href="{% url 'post_list' %}">Child Welfare Committee</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link text-white" href="{% url 'lost' %}">Lost & Found</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link text-white" href="{% url 'lostChild' %}">Lost Children</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link text-white" href="{% url 'lostChild' %}">Lost Children</a>
+                </li>
+
+                <!-- <li class="nav-item">
+            {% if user.is_authenticated %}
+                <a class="nav-link text-white" href="#">Hello {{ user.username }}</a>
+            {% endif %}
+            </li> -->
+
+            </ul>
+            <!-- <form class="form-inline pull-md-right">
+            <input class="form-control" type="text" placeholder="Search">
+            <button class="btn" type="submit">Search</button>
+        </form> -->
+        </nav>
+    </div>
+
+    <div style=" background: url('a.jpg') no-repeat; width:100% ; height: 100vh;" class="container-fluid">
+        <div class="row d-flex justify-content-center mt-5">
+            <div class="col-md-12 col-xs-12 mt-5 text-center text-success">
+                {% if mainHeading %}
+                <h2>{{mainHeading}}</h2>
+                <h3 class="text-success">Payment Successfully Done</h3>
+                <h5>
+                    <a href="{% url 'homepage' %}" class="mt-3 btn btn-success" style="font-size: 20px;">
+                        Go to Home Page
+                    </a>
+                </h5>
+                {% else %}
+                <h3 class="text-success">Payment Failed</h3>
+                {% endif %}
+            </div>
+
+        </div>
+    </div>
+    </div>
+
+    <script src="https://code.jquery.com/jquery-3.1.1.slim.min.js"
+        integrity="sha384-A7FZj7v+d/sdmMqp/nOQwliLvUsJfDHW+k9Omg/a/EheAdgtzNs3hpfag6Ed950n"
+        crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/tether/1.4.0/js/tether.min.js"
+        integrity="sha384-DztdAPBWPRXSA/3eYEEUWrWCy7G5KFbe8fFjk5JAIxUYHKkDx6Qin1DkWx51bBrb"
+        crossorigin="anonymous"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.6/js/bootstrap.min.js"
+        integrity="sha384-vBWWzlZJ8ea9aCX4pEW3rVHjgjt7zpkNpZk+02D9phzyeVkE+jo0ieGizqPLForn"
+        crossorigin="anonymous"></script>
+</body>
+
+</html>

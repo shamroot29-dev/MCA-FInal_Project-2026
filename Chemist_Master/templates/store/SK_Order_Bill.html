@@ -1,0 +1,122 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Bill {{ billNo }} | AI Based Pharmacy System</title>
+  <link rel="stylesheet" type="text/css" href="{% static 'css/project-polish.css' %}">
+</head>
+<body>
+  <div class="app-shell">
+    <aside class="app-sidebar">
+      <div class="app-brand">
+        <div class="app-brand-mark">C</div>
+        <div>
+          <p class="app-brand-title">Chemist Portal</p>
+          <p class="app-brand-subtitle">Store workspace</p>
+        </div>
+      </div>
+      <nav class="app-nav" aria-label="Chemist navigation">
+        <a href="{% url 'chemist:ch_index' %}"><span class="nav-dot">H</span>Home</a>
+        <a href="{% url 'chemist:Dashboard' %}"><span class="nav-dot">D</span>Dashboard</a>
+        <a href="{% url 'chemist:order-medicine' %}"><span class="nav-dot">O</span>Order Medicine</a>
+        <a href="{% url 'chemist:ProductListView' %}"><span class="nav-dot">L</span>Order List</a>
+        <a href="{% url 'chemist:ReceivedStockView' %}"><span class="nav-dot">R</span>Received Stock</a>
+        <a href="{% url 'chemist:Uploaded_Medi' %}"><span class="nav-dot">M</span>Medicine Guide</a>
+        <a class="logout-link" href="{% url 'chemist:logout' %}"><span class="nav-dot">X</span>Logout</a>
+      </nav>
+    </aside>
+
+    <main class="app-main">
+      <header class="app-topbar">
+        <div>
+          <p class="topbar-kicker">Chemist portal</p>
+          <h1 class="topbar-title">Bill No. {{ billNo }}</h1>
+        </div>
+      </header>
+
+      <div class="app-content">
+        {% if messages %}
+        <div class="message-stack">
+          {% for message in messages %}
+          <div class="app-alert {{ message.tags }}">{{ message }}</div>
+          {% endfor %}
+        </div>
+        {% endif %}
+
+        <section class="metric-grid">
+          <div class="metric-card">
+            <p class="metric-label">Bill Date</p>
+            <p class="metric-value" style="font-size: 20px;">{{ ddate }}</p>
+          </div>
+          <div class="metric-card">
+            <p class="metric-label">Payable Amount</p>
+            <p class="metric-value">{{ tot }}</p>
+          </div>
+          <div class="metric-card">
+            <p class="metric-label">Payment Status</p>
+            <p class="metric-value" style="font-size: 20px;">
+              {% if payment_pending %}Pending{% else %}Paid{% endif %}
+            </p>
+          </div>
+        </section>
+
+        <section class="content-card">
+          <div class="card-heading">
+            <div>
+              <h2>Bill Items</h2>
+              <p>This bill contains supplier accepted medicines and final payable totals{% if supplier_email %} from {{ supplier_email }}{% endif %}.</p>
+            </div>
+            <div class="table-actions">
+              {% if payment_pending %}
+              <a class="action-link" href="{% url 'chemist:pay_bill' billNo %}">Pay Pending Bill</a>
+              {% endif %}
+              <a class="action-link" href="{% url 'chemist:sk_create_pdf' billNo %}">Download PDF</a>
+              <a class="action-link secondary" href="{% url 'chemist:Dashboard' %}">Back to Dashboard</a>
+            </div>
+          </div>
+
+          <div class="table-shell">
+            <table class="data-table">
+              <thead>
+                <tr>
+                  <th>No.</th>
+                  <th>Product Name</th>
+                  <th>Product Price</th>
+                  <th>Product Qty</th>
+                  <th>Product Total</th>
+                  <th>Payment</th>
+                </tr>
+              </thead>
+              <tbody>
+                {% for i in BillDes %}
+                <tr>
+                  <td>{{ forloop.counter }}</td>
+                  <td>{{ i.pd_nm }}</td>
+                  <td>{{ i.pd_price }}</td>
+                  <td>{{ i.pd_qty }}</td>
+                  <td>{{ i.pd_tot }}</td>
+                  <td>
+                    {% if i.payment_status == 'Pending' %}
+                    <span class="status-pill pending">Payment Pending</span>
+                    {% else %}
+                    <span class="status-pill accepted">{{ i.payment_status }}</span>
+                    {% endif %}
+                  </td>
+                </tr>
+                {% endfor %}
+                <tr>
+                  <td colspan="4"><strong>Payable Amount</strong></td>
+                  <td><strong>{{ tot }}</strong></td>
+                  <td></td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </section>
+      </div>
+    </main>
+  </div>
+</body>
+</html>

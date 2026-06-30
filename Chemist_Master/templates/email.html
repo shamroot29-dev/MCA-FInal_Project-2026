@@ -1,0 +1,33 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Chemist Password Recovery | AI Based Pharmacy System</title>
+  <link rel="stylesheet" type="text/css" href="{% static 'css/project-polish.css' %}">
+</head>
+<body>
+  <main class="auth-page">
+    <form class="auth-card" method="POST">
+      {% csrf_token %}
+      <div class="auth-brand">
+        <div class="auth-eyebrow">Password Recovery</div>
+        <h1 class="auth-title">Send OTP</h1>
+        <p class="auth-subtitle">Enter your registered chemist email to receive an OTP.</p>
+      </div>
+      {% if messages %}
+      <div class="message-stack">{% for message in messages %}<div class="app-alert {{ message.tags }}">{{ message }}</div>{% endfor %}</div>
+      {% endif %}
+      <div class="field">
+        <label for="id_user_name">Email</label>
+        <input type="email" id="id_user_name" name="email" value="{{ email }}" required>
+      </div>
+      <div class="action-row">
+        <button class="auth-submit" type="submit">Send OTP</button>
+        <a class="btn-secondary-soft" href="{% url 'chemist:ch_signin' %}">Back to Login</a>
+      </div>
+    </form>
+  </main>
+</body>
+</html>

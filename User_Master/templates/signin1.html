@@ -1,0 +1,50 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Supplier Login | AI Based Pharmacy System</title>
+  <link rel="stylesheet" type="text/css" href="{% static 'css/project-polish.css' %}">
+</head>
+<body>
+  <main class="auth-page">
+    <form class="auth-card" method="POST" novalidate>
+      {% csrf_token %}
+      <div class="auth-brand">
+        <div class="auth-eyebrow">Supplier Portal</div>
+        <h1 class="auth-title">Welcome Back</h1>
+        <p class="auth-subtitle">Sign in to manage stock, chemist orders, billing, and prediction reports.</p>
+      </div>
+
+      {% if messages %}
+      <div class="message-stack">
+        {% for message in messages %}
+          <div class="app-alert {{ message.tags }}">{{ message }}</div>
+        {% endfor %}
+      </div>
+      {% endif %}
+
+      <div class="field">
+        <label for="id_uid">Email</label>
+        <input id="id_uid" type="email" name="uid" value="{{ uid }}" placeholder="supplier@example.com" required>
+      </div>
+
+      <div class="field">
+        <label for="id_userpwd">Password</label>
+        <input id="id_userpwd" type="password" name="userpwd" placeholder="Enter password" required>
+      </div>
+
+      <div class="action-row">
+        <button class="auth-submit" type="submit">Sign In</button>
+        <a class="btn-secondary-soft" href="{% url 'user:signup' %}">Create Supplier Account</a>
+      </div>
+
+      <div class="action-row">
+        <a href="{% url 'user:forgotpass' %}">Forgot password?</a>
+        <a href="{% url 'user:index' %}">Back to Home</a>
+      </div>
+    </form>
+  </main>
+</body>
+</html>

@@ -1,0 +1,34 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Something Went Wrong | AI Based Pharmacy System</title>
+  <link rel="stylesheet" type="text/css" href="{% static 'css/project-polish.css' %}">
+</head>
+<body>
+  <main class="auth-page">
+    <section class="auth-card">
+      <div class="auth-brand">
+        <div class="auth-eyebrow">Error</div>
+        <h1 class="auth-title">We could not complete that action</h1>
+        <p class="auth-subtitle">Please check your details and try again. If the issue continues, return to the home page and restart the flow.</p>
+      </div>
+
+      {% if messages %}
+      <div class="message-stack">
+        {% for message in messages %}
+          <div class="app-alert {{ message.tags }}">{{ message }}</div>
+        {% endfor %}
+      </div>
+      {% endif %}
+
+      <div class="action-row">
+        <a class="btn-primary-soft" href="{% url 'user:index' %}">Go Home</a>
+        <a class="btn-secondary-soft" href="{% url 'user:signin' %}">Supplier Login</a>
+      </div>
+    </section>
+  </main>
+</body>
+</html>

@@ -1,0 +1,121 @@
+{% extends 'store/base.html' %}
+
+{% block content %}
+                            
+        <div class="main">
+            <div class="main-inner">	
+                <div class="container">
+                <div class="row">
+               
+                </div>
+            </div>	
+                <div class="container">
+    
+                </form>
+            </div><!-- /widget-content -->
+        </div><!-- /widget -->
+        
+        <script>
+        
+        $(document).ready(function(){
+          $( "#autoCustomerField" ).autocomplete({
+                source: autoCustomerList,
+                change: function(event, ui) {
+                    if (ui.item == null || ui.item == undefined) {
+                    }
+                    else{
+                        if (ui.item) {
+                            $( "#autoCustomerField" ).val( ui.item.label );
+                            $( event.target ).attr("data-oldval", ui.item.label );
+                            $( "#hidden-companyname" ).val( ui.item.value);
+                        
+                        }
+                    }
+                },
+                select: function( event, ui ) {
+                    $( "#autoCustomerField" ).val( ui.item.label );
+                    $( event.target ).attr("data-oldval", ui.item.label );
+                    $( "#hidden-companyname" ).val( ui.item.value);
+                    return false;
+                }, minLength:0
+            }).focus(function(){            
+                    $(this).autocomplete("search");
+            });
+        });
+                
+        </script>
+        
+        <div class="row" style="margin-top:-20px;">
+                    <div class="col-md-12">
+                        <center>
+        <script async="" src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+        <!-- gst list 1 small -->
+        <ins class="adsbygoogle" style="display: inline-block; width: 728px; height: 0px;" data-ad-client="ca-pub-7485845865785659" data-ad-slot="5628754217" data-adsbygoogle-status="done" data-overlap-observer-io="false"><ins id="aswift_1_expand" style="display: inline-table; border: none; height: 0px; margin: 0px; padding: 0px; position: relative; visibility: visible; width: 728px; background-color: transparent;"><ins id="aswift_1_anchor" style="display: block; border: none; height: 0px; margin: 0px; padding: 0px; position: relative; visibility: visible; width: 728px; background-color: transparent; overflow: hidden; transition: opacity 1s cubic-bezier(0.4, 0, 1, 1) 0s, width 0.2s cubic-bezier(0.4, 0, 1, 1) 0.3s, height 0.5s cubic-bezier(0.4, 0, 1, 1) 0s; opacity: 0;"><iframe width="728" height="90" frameborder="0" marginwidth="0" marginheight="0" vspace="0" hspace="0" allowtransparency="true" scrolling="no" allowfullscreen="true" onload="var i=this.id,s=window.google_iframe_oncopy,H=s&amp;&amp;s.handlers,h=H&amp;&amp;H[i],w=this.contentWindow,d;try{d=w.document}catch(e){}if(h&amp;&amp;d&amp;&amp;(!d.body||!d.body.firstChild)){if(h.call){setTimeout(h,0)}else if(h.match){try{h=s.upd(h,i)}catch(e){}w.location.replace(h)}}" id="aswift_1" name="aswift_1" style="left:0;position:absolute;top:0;border:0px;width:728px;height:90px;"></iframe></ins></ins></ins>
+        <script>
+        (adsbygoogle = window.adsbygoogle || []).push({});
+        </script>
+                        </center>
+                    </div>
+                </div>
+        <div class="row">
+            <div class="span12">
+                <form id="list-data-table" name="tabledata" method="POST">
+                    {% csrf_token %}
+                                <div class="widget widget-table action-table">
+                        <div class="widget-header">
+                            <h3>Sales List</h3>
+
+                            
+                            
+                                                   
+                            <a href="{% url 'AddSaleView' %}" class="btn btn-primary pull-right">
+                                   Add Sales</a> 
+                        </div>
+                        <div class="widget-content">
+                            <table class="table table-striped table-bordered footable footable-1 breakpoint-lg" data-footable="" data-toggle-column="last" style="display: table;">
+                                <thead>
+                                    <tr class="footable-header">
+                
+                                        <th style="display: table-cell;">
+                                            <center><a href="">Date</a></center>
+                                        </th>
+                                        <th style="display: table-cell;">
+                                            <a href="list-company.php?sort=DESC&amp;field=c.companyname">Product Name</a>
+                                        </th>
+                                        <th data-breakpoints="md" style="display: table-cell;">
+                                            <a href="list-company.php?sort=DESC&amp;field=c.contactno1">Quantity</a>
+                                        </th>
+                                        <th data-breakpoints="md" style="display: table-cell;">
+                                            <a href="list-company.php?sort=DESC&amp;field=c.contactno1">Total Price</a>
+                                        </th>
+                                       
+                                        
+                                        <th data-breakpoints="sm" class="footable-last-visible" style="display: table-cell;">
+                                            <center>Action</center>
+                                        </th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for i in data %}
+                                    <tr>   
+                                    <td class="footable-first-visible" style="display: table-cell;"><center><h4>{{ i.date }}</h4></center></td>
+                                    <td style="display: table-cell;">{{ i.productname }}</td>
+                                        <td style="display: table-cell;">{{ i.qty }}</td>
+                                        <td style="display: table-cell;">{{ i.totalprice }}</td>
+                                        
+                                        
+                                        <td class="td-actions footable-last-visible" style="display: table-cell;">
+                                            <a href="/salesdelete/{{ i.id }}" class="btn btn-danger" value="Delete" name="btndelete">
+                                           Delete</button></td>
+                                    </tr>
+                                    {% endfor %}
+
+                     </div>
+                </form>
+                 
+            </div>
+            
+        </div>
+    </div>
+
+{% endblock %}

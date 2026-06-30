@@ -1,0 +1,177 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Received Stock | AI Based Pharmacy System</title>
+  <link rel="stylesheet" type="text/css" href="{% static 'css/project-polish.css' %}">
+</head>
+<body>
+  <div class="app-shell">
+    <aside class="app-sidebar">
+      <div class="app-brand">
+        <div class="app-brand-mark">C</div>
+        <div>
+          <p class="app-brand-title">Chemist Portal</p>
+          <p class="app-brand-subtitle">Store workspace</p>
+        </div>
+      </div>
+
+      <nav class="app-nav" aria-label="Chemist navigation">
+        <a href="{% url 'chemist:ch_index' %}"><span class="nav-dot">H</span>Home</a>
+        <a href="{% url 'chemist:Dashboard' %}"><span class="nav-dot">D</span>Dashboard</a>
+        <a href="{% url 'chemist:order-medicine' %}"><span class="nav-dot">O</span>Order Medicine</a>
+        <a href="{% url 'chemist:ProductListView' %}"><span class="nav-dot">L</span>Order List</a>
+        <a class="active" href="{% url 'chemist:ReceivedStockView' %}"><span class="nav-dot">R</span>Received Stock</a>
+        <a href="{% url 'chemist:Uploaded_Medi' %}"><span class="nav-dot">M</span>Medicine Guide</a>
+        <a class="logout-link" href="{% url 'chemist:logout' %}"><span class="nav-dot">X</span>Logout</a>
+      </nav>
+    </aside>
+
+    <main class="app-main">
+      <header class="app-topbar">
+        <div>
+          <p class="topbar-kicker">Chemist portal</p>
+          <h1 class="topbar-title">Received Stock</h1>
+        </div>
+        <div class="user-chip">Logged in as <span>{{ username }}</span></div>
+      </header>
+
+      <div class="app-content">
+        <section class="hero-panel">
+          <div class="hero-card">
+            <p class="hero-eyebrow">Billed inventory</p>
+            <h2 class="hero-title">Track medicines that were accepted by supplier and converted into bills.</h2>
+            <p class="hero-text">Order List shows active requests. Once supplier generates a bill, the medicine appears here as received stock history.</p>
+          </div>
+
+          <div class="notice-card">
+            <h3>How to read this</h3>
+            <ul class="notice-list">
+              <li>Summary groups the same medicine across bills.</li>
+              <li>History keeps each bill item separate with bill number and date.</li>
+              <li>Use View Bill or PDF to open invoice details.</li>
+            </ul>
+          </div>
+        </section>
+
+        <section class="metric-grid">
+          <div class="metric-card">
+            <p class="metric-label">Received medicines</p>
+            <p class="metric-value">{{ medicine_count }}</p>
+          </div>
+          <div class="metric-card">
+            <p class="metric-label">Total quantity</p>
+            <p class="metric-value">{{ total_quantity }}</p>
+          </div>
+          <div class="metric-card">
+            <p class="metric-label">Total amount</p>
+            <p class="metric-value">{{ total_amount }}</p>
+          </div>
+        </section>
+
+        <section class="content-card">
+          <div class="card-heading">
+            <div>
+              <h2>Medicine Stock Summary</h2>
+              <p>Total received quantity grouped by medicine name.</p>
+            </div>
+          </div>
+
+          {% if summary %}
+          <div class="table-shell">
+            <table class="data-table">
+              <thead>
+                <tr>
+                  <th>No.</th>
+                  <th>Medicine</th>
+                  <th>Total Received Qty</th>
+                  <th>Total Amount</th>
+                  <th>Latest Bill Date</th>
+                </tr>
+              </thead>
+              <tbody>
+                {% for item in summary %}
+                <tr>
+                  <td>{{ forloop.counter }}</td>
+                  <td>{{ item.name }}</td>
+                  <td>{{ item.quantity }}</td>
+                  <td>{{ item.amount }}</td>
+                  <td>{{ item.latest_date }}</td>
+                </tr>
+                {% endfor %}
+              </tbody>
+            </table>
+          </div>
+          {% else %}
+          <div class="empty-state">No billed stock has been received yet.</div>
+          {% endif %}
+        </section>
+
+        <section class="content-card">
+          <div class="card-heading">
+            <div>
+              <h2>Bill-wise Received History</h2>
+              <p>Each row shows the medicine quantity received through a generated supplier bill.</p>
+            </div>
+          </div>
+
+          {% if bills %}
+          <div class="table-shell">
+            <table class="data-table">
+              <thead>
+                <tr>
+                  <th>No.</th>
+                  <th>Bill No.</th>
+                  <th>Bill Date</th>
+                  <th>Supplier</th>
+                  <th>Medicine</th>
+                  <th>Rate</th>
+                  <th>Qty</th>
+                  <th>Total</th>
+                  <th>Payment</th>
+                  <th>Action</th>
+                </tr>
+              </thead>
+              <tbody>
+                {% for bill in bills %}
+                <tr>
+                  <td>{{ forloop.counter }}</td>
+                  <td>{{ bill.Bill_No }}</td>
+                  <td>{{ bill.date_data }}</td>
+                  <td>{{ bill.supplier.uid }}</td>
+                  <td>{{ bill.pd_nm }}</td>
+                  <td>{{ bill.pd_price }}</td>
+                  <td>{{ bill.pd_qty }}</td>
+                  <td>{{ bill.pd_tot }}</td>
+                  <td>
+                    {% if bill.payment_status == 'Pending' %}
+                    <span class="status-pill pending">Payment Pending</span>
+                    {% else %}
+                    <span class="status-pill accepted">{{ bill.payment_status }}</span>
+                    {% endif %}
+                  </td>
+                  <td>
+                    <div class="table-actions">
+                      {% if bill.payment_status == 'Pending' %}
+                      <a class="action-link" href="{% url 'chemist:pay_bill' bill.Bill_No %}">Pay</a>
+                      {% endif %}
+                      <a class="action-link secondary" href="{% url 'chemist:SK_View_Bills' bill.Bill_No %}">View Bill</a>
+                      <a class="action-link" href="{% url 'chemist:sk_create_pdf' bill.Bill_No %}">PDF</a>
+                    </div>
+                  </td>
+                </tr>
+                {% endfor %}
+              </tbody>
+            </table>
+          </div>
+          {% else %}
+          <div class="empty-state">No bill history is available yet.</div>
+          {% endif %}
+        </section>
+      </div>
+    </main>
+  </div>
+</body>
+</html>

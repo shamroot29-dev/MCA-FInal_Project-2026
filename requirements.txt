@@ -1,0 +1,10 @@
+Django==3.1
+Pillow
+pandas
+numpy
+scikit-learn
+razorpay
+xhtml2pdf
+plotly
+pdfkit
+pytz

@@ -1,0 +1,32 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Verify OTP | AI Based Pharmacy System</title>
+  <link rel="stylesheet" type="text/css" href="{% static 'css/project-polish.css' %}">
+</head>
+<body>
+  <main class="auth-page">
+    <form class="auth-card" method="POST">
+      {% csrf_token %}
+      <div class="auth-brand">
+        <div class="auth-eyebrow">Verification</div>
+        <h1 class="auth-title">Enter OTP</h1>
+        <p class="auth-subtitle">Use the OTP sent to your email. In demo mode, OTP appears as a message.</p>
+      </div>
+      {% if messages %}
+      <div class="message-stack">{% for message in messages %}<div class="app-alert {{ message.tags }}">{{ message }}</div>{% endfor %}</div>
+      {% endif %}
+      <div class="field">
+        <label for="id_otp">OTP</label>
+        <input type="number" id="id_otp" name="otp" value="{{ otp }}" required>
+      </div>
+      <div class="action-row">
+        <button class="auth-submit" type="submit">Verify</button>
+      </div>
+    </form>
+  </main>
+</body>
+</html>

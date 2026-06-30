@@ -1,0 +1,109 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Bill Details | AI Based Pharmacy System</title>
+  <link rel="stylesheet" type="text/css" href="{% static 'css/project-polish.css' %}">
+</head>
+<body>
+  <div class="app-shell">
+    <aside class="app-sidebar">
+      <div class="app-brand">
+        <div class="app-brand-mark">U</div>
+        <div>
+          <p class="app-brand-title">AI Based Pharmacy System</p>
+          <p class="app-brand-subtitle">Supplier workspace</p>
+        </div>
+      </div>
+      <nav class="app-nav" aria-label="Supplier navigation">
+        <a href="{% url 'user:adminDashboard' %}"><span class="nav-dot">D</span>Dashboard</a>
+        <a href="{% url 'user:viewstock' %}"><span class="nav-dot">S</span>Stock</a>
+        <a class="active" href="{% url 'user:confirm_order' %}"><span class="nav-dot">O</span>Orders</a>
+        <a href="{% url 'user:createGraph' %}"><span class="nav-dot">A</span>AI Forecast</a>
+        <a class="logout-link" href="{% url 'user:logout' %}"><span class="nav-dot">L</span>Logout</a>
+      </nav>
+    </aside>
+
+    <main class="app-main">
+      <header class="app-topbar">
+        <div>
+          <p class="topbar-kicker">Supplier portal</p>
+          <h1 class="topbar-title">Bill Details</h1>
+        </div>
+      </header>
+
+      <div class="app-content">
+        <section class="content-card">
+          <div class="card-heading">
+            <div>
+              <h2>Generated Bill Preview</h2>
+              <p>Review chemist details and medicine totals before creating the system generated PDF.</p>
+            </div>
+          </div>
+
+          {% for store,prods in data.items %}
+          <div class="notice-card" style="margin-bottom: 18px;">
+            <h3>{{ store.chemistfname }} - {{ store.cid }}</h3>
+            <p>Contact: {{ store.chemistcontactno }} | Address: {{ store.chemistaddress }}</p>
+            <p>Payment Status:
+              {% if payment_status == 'Pending' %}
+              <span class="status-pill pending">Payment Pending</span>
+              {% else %}
+              <span class="status-pill accepted">Paid</span>
+              {% endif %}
+            </p>
+          </div>
+
+          <div class="table-shell">
+            <table class="data-table">
+              <thead>
+                <tr>
+                  <th>Medicine Name</th>
+                  <th>Medicine Price</th>
+                  <th>Medicine Qty</th>
+                  <th>Medicine Total</th>
+                  <th>Payment</th>
+                </tr>
+              </thead>
+              <tbody>
+                {% for pr,rec in prods.items %}
+                <tr>
+                  <td>{{ pr }}</td>
+                  <td>{{ rec.real_price }}</td>
+                  <td>{{ rec.prod_qty }}</td>
+                  <td>{{ rec.prod_price }}</td>
+                  <td>
+                    {% if rec.payment_status == 'Pending' %}
+                    <span class="status-pill pending">Payment Pending</span>
+                    {% else %}
+                    <span class="status-pill accepted">{{ rec.payment_status }}</span>
+                    {% endif %}
+                  </td>
+                </tr>
+                {% endfor %}
+                <tr>
+                  <td colspan="3"><strong>Total Amount</strong></td>
+                  <td><strong>{{ grand_tot }}</strong></td>
+                  <td></td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+          {% if not show %}
+          <div class="hero-actions">
+            <a class="action-link" href="{% url 'user:create_pdf' store.cid %}">Create System PDF</a>
+            <a class="action-link secondary" href="{% url 'user:confirm_order' %}">Back to Orders</a>
+          </div>
+          {% endif %}
+          {% empty %}
+          <div class="empty-state">No bill data is available.</div>
+          {% endfor %}
+        </section>
+      </div>
+    </main>
+  </div>
+</body>
+</html>

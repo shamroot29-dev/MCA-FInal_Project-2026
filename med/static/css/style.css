@@ -1,0 +1,65 @@
+
+  body{
+    background-image: url('/static/img/pill.jpg');
+    
+  }
+  
+  
+  .h-tag {
+  /* font-size: 30px;
+  color: #fff;
+  text-align: center;
+  -webkit-animation: h-tag 1s ease-in-out infinite alternate;
+  -moz-animation: h-tag 1s ease-in-out infinite alternate;
+  animation: h-tag 1s ease-in-out infinite alternate; */
+  padding-bottom: 30px;
+  text-shadow: 1px 1px 2px black, 0 0 25px blue, 0 0 5px darkblue;
+  color: white;
+}
+
+/* @-webkit-keyframes h-tag {
+  from {
+    text-shadow: 0 0 10px #1c8adb, 0 0 20px#1c8adb, 0 0 30px #1c8adb, 0 0 40px  #1c8adb, 0 0 50px#1c8adb, 0 0 60px#1c8adb, 0 0 70px #1c8adb;
+  }
+  
+  to {
+    text-shadow: 0 0 20px #fff, 0 0 30px #1316db, 0 0 40px#1316db, 0 0 50px#1316db, 0 0 60px #1316db, 0 0 70px#1316db, 0 0 80px#1316db;
+  }
+} */
+.post-form{    
+  background: rgba(31, 29, 29, 0.5);
+    color: white;
+    top: 50%;
+    left: 50%;
+    position: absolute;
+    transform: translate(-50%,-50%);
+    box-sizing: border-box;
+    padding: 70px 30px;
+}
+.post-form input[type="text"], input[type="number"] , select[id = id_chemist], select[id="id_formulation"]
+{
+    border: none;
+    width: 150px;
+    border-bottom: 1px solid #fff;
+    background: transparent;
+    outline: none;
+    font-size: 15px;
+}
+.button
+{
+    border: none;
+    outline: none;
+    background: #1c8adb;
+    font-size: 15px;
+    border-radius: 8px;
+    padding: 10px 24px;
+    background-color: white; 
+  color: black; 
+  border: 2px solid #4ca8af;
+}
+.button:hover
+{
+    cursor: pointer;
+    background: #4ca8af;
+    color: rgb(250, 253, 249);
+}

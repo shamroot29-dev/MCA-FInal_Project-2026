@@ -1,0 +1,81 @@
+{% extends 'admin/adminbase.html' %}
+{% load static %}
+<link rel="stylesheet" type="text/css" href="{% static 'css/project-polish.css' %}">
+{% block content3 %}
+
+
+<body>
+
+<div id="page-wrapper">
+    <div class="container-fluid">
+        <div class="row bg-title">
+            <div class="col-lg-3 col-md-4 col-sm-4 col-xs-12">
+                <h4 class="page-title">Bill Orders</h4>
+            </div>
+            <div class="col-lg-9 col-sm-8 col-md-8 col-xs-12">
+                
+                <ol class="breadcrumb">
+                    <li><a href="{% url 'AdminDashboard' %}">Dashboard</a></li>
+                    <!-- <li><a href="{% url 'viewstock' %}">view stock</a></li> -->
+                    <li class="active">Bill Orders </li>
+                </ol>
+            </div>
+        </div>
+        <!-- /.row -->
+        <!-- .row -->
+
+       
+            <br><br><br>
+        <div>
+        <table  class="table" height="200px"; width="400px" style="text-align:center;border-style: solid;">
+            <thead>
+                <tr>
+                    <th style="text-align: center;font-weight: bold;"> No. </th>
+                    <th style="text-align: center;font-weight: bold;"> pharmacy name</th>
+                    <th style="text-align: center;font-weight: bold;"> Bill Ids </th>
+                    
+                </tr>
+            </thead>
+            <tbody> 
+                            {% for i in data.values %}
+                                {% for j,k in i.items %}
+                                    <tr>
+                                        <td>{{ forloop.counter }}</td>
+                                        <td>{{ j }}</td>
+                                        <td>
+                                            {% for bi in k %}
+                                                <a href="{% url 'user:create_pdf' bi %}">{{ bi }}</a><br>
+                                            {% endfor %}
+                                        </td>
+                                    </tr>
+                                {% endfor %}
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                
+                </div>
+            </div>
+        </div>
+        <!-- /.row -->
+    </div>
+    <!-- /.container-fluid -->
+</div>
+
+
+<body>
+    <br><br><br>
+<div>
+    <!-- {{ data }} -->
+    
+
+    {% comment %}
+    {% for i in data %}
+    <h2><a href="{% url 'chemist:sk_create_pdf' i.Bill_No  %}">{{ i.Bill_No }}</a></h2>
+{% endfor %}  
+    {% endcomment %}
+    
+
+
+</div>
+</body>
+{% endblock %}

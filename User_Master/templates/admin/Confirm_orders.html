@@ -1,0 +1,101 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Order Summary | AI Based Pharmacy System</title>
+  <link rel="stylesheet" type="text/css" href="{% static 'css/project-polish.css' %}">
+</head>
+<body>
+  <div class="app-shell">
+    <aside class="app-sidebar">
+      <div class="app-brand">
+        <div class="app-brand-mark">U</div>
+        <div>
+          <p class="app-brand-title">AI Based Pharmacy System</p>
+          <p class="app-brand-subtitle">Supplier workspace</p>
+        </div>
+      </div>
+      <nav class="app-nav" aria-label="Supplier navigation">
+        <a href="{% url 'user:adminDashboard' %}"><span class="nav-dot">D</span>Dashboard</a>
+        <a href="{% url 'user:viewstock' %}"><span class="nav-dot">S</span>Stock</a>
+        <a class="active" href="{% url 'user:confirm_order' %}"><span class="nav-dot">O</span>Orders</a>
+        <a href="{% url 'user:createGraph' %}"><span class="nav-dot">A</span>AI Forecast</a>
+        <a class="logout-link" href="{% url 'user:logout' %}"><span class="nav-dot">L</span>Logout</a>
+      </nav>
+    </aside>
+
+    <main class="app-main">
+      <header class="app-topbar">
+        <div>
+          <p class="topbar-kicker">Supplier portal</p>
+          <h1 class="topbar-title">Order Summary</h1>
+        </div>
+      </header>
+
+      <div class="app-content">
+        {% if messages %}
+        <div class="message-stack">
+          {% for message in messages %}
+          <div class="app-alert {{ message.tags }}">{{ message }}</div>
+          {% endfor %}
+        </div>
+        {% endif %}
+
+        <section class="content-card">
+          <div class="card-heading">
+            <div>
+              <h2>Confirmed Order Bills</h2>
+              <p>This page groups accepted order data and lets you open bill details or generate printable bill output.</p>
+            </div>
+          </div>
+
+          {% if orders %}
+          <div class="table-shell">
+            <table class="data-table">
+              <thead>
+                <tr>
+                  <th>Name</th>
+                  <th>Quantity</th>
+                  <th>Total Medicines</th>
+                  <th>Total Price</th>
+                  <th>Payment</th>
+                  <th>Bill</th>
+                </tr>
+              </thead>
+              <tbody>
+                {% for i,j in orders.items %}
+                <tr>
+                  <td>{{ i }}</td>
+                  <td>{{ j.prod_qty }}</td>
+                  <td>{{ j.qty }}</td>
+                  <td>{{ j.prod_price }}</td>
+                  <td>
+                    {% if j.payment_status == 'Pending' %}
+                    <span class="status-pill pending">Payment Pending</span>
+                    {% else %}
+                    <span class="status-pill accepted">Paid</span>
+                    {% endif %}
+                  </td>
+                  <td>
+                    {% if j.show %}
+                    <a class="action-link" href="{% url 'user:create_pdf' i %}">Create PDF</a>
+                    {% else %}
+                    <a class="action-link secondary" href="{% url 'user:billdata' i %}">Bill Data</a>
+                    {% endif %}
+                  </td>
+                </tr>
+                {% endfor %}
+              </tbody>
+            </table>
+          </div>
+          {% else %}
+          <div class="empty-state">No confirmed order data is available yet.</div>
+          {% endif %}
+        </section>
+      </div>
+    </main>
+  </div>
+</body>
+</html>

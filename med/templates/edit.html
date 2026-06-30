@@ -1,0 +1,380 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Index</title>
+
+    <link
+      rel="stylesheet"
+      href="https://fonts.googleapis.com/css?family=Roboto|Varela+Round|Open+Sans"
+    />
+    <link
+      rel="stylesheet"
+      href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css"
+    />
+    <link
+      rel="stylesheet"
+      href="https://fonts.googleapis.com/icon?family=Material+Icons"
+    />
+    <link
+      rel="stylesheet"
+      href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdn.datatables.net/1.13.4/css/dataTables.bootstrap4.min.css"
+    />
+    <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/js/bootstrap.min.js"></script>
+    <script src="https://cdn.datatables.net/1.13.4/js/jquery.dataTables.min.js"></script>
+    <script src="https://cdn.datatables.net/1.13.4/js/dataTables.bootstrap4.min.js"></script>
+    <!-- <style>
+  body{
+    background-image: url('/static/img/pill.jpg');
+    
+  }
+  
+  
+  .h-tag {
+  
+  padding-bottom: 30px;
+  text-shadow: 1px 1px 2px black, 0 0 25px blue, 0 0 5px darkblue;
+  color: white;
+}
+
+
+.post-form{    
+  background: rgb(0 0 0 / 82%);
+    color: white;
+    top: 50%;
+    left: 50%;
+    position: absolute;
+    transform: translate(-50%,-50%);
+    box-sizing: border-box;
+    padding: 70px 30px;
+}
+.post-form input[type="text"], input[type="number"] , select[id = id_chemist], select[id="id_formulation"]
+{
+  padding: 5px;
+  border: none;
+    border-bottom: 1px solid #fff;
+    border-top: 1px solid #fff;
+    background: transparent;
+    outline: none;
+    color: azure;
+    border-radius: 8%;
+    border-top-left-radius: 10px;
+    border-top-right-radius: 10px;
+    border-bottom-right-radius: 10px;
+    border-bottom-left-radius: 10px;
+    font-size: 15px;
+}
+option{
+  background-color: rgb(46, 46, 44);
+}
+.button
+{
+    border: none;
+    outline: none;
+    background: #1c8adb;
+    font-size: 15px;
+    border-radius: 8px;
+    padding: 10px 24px;
+    background-color: white; 
+  color: black; 
+  border: 2px solid #4ca8af;
+}
+.button:hover
+{
+    cursor: pointer;
+    background: #4ca8af;
+    color: rgb(250, 253, 249);
+}
+
+table {
+  font-family: arial, sans-serif;
+  border-collapse: collapse;
+  width: 100%;
+}
+
+td, th {
+  
+  text-align: center;
+  padding: 8px;
+}
+
+tr:nth-child(even) {
+  background-color: #dddddd;
+}
+</style>  -->
+  
+<link rel="stylesheet" type="text/css" href="{% static 'css/project-polish.css' %}">
+</head>
+  <body>
+    <!-- <form method="POST" class="box"> 
+    {% csrf_token %}
+    
+
+ <h1 class="h3-tag">Update Medicine</h1>
+<center>
+  <table>
+    
+    <tr>
+      <td>
+     <label for="id_mname">Medicine_Name:</label> 
+     <input type="text"  name="mname" maxlength="30" required id="id_mname" value="{{medi.mname}}">
+    </td>
+   <td>
+     <label for="id_symptoms">Symptoms:</label> 
+     <input type="text" name="symptoms" maxlength="1000" required id="id_symptoms"  value="{{medi.symptoms}}">
+    </td>
+   <td>
+     <label for="id_diseases">Diseases:</label>
+      <input type="text"  name="diseases" maxlength="1000" required id="id_diseases"  value="{{medi.diseases}}">
+    </td>
+    </tr>
+ 
+    <tr>
+        <td>
+     <label for="id_category">Type:</label> 
+     <input type="text" name="category" maxlength="50" required id="id_category"  value="{{medi.category}}">
+    </td>
+   <td>
+     <label for="id_unit">Unit:</label>
+      <input type="text" name="unit" maxlength="10" required id="id_unit"  value="{{medi.unit}}">
+    </td>
+   <td>
+     <label for="id_unit_price">Unit_price:</label>
+      <input type="number" name="unit_price" step="any" required id="id_unit_price"  value="{{medi.unit_price}}">
+    </td>
+    </tr>
+   <tr>
+    <td>
+     <label for="id_package_unit">Package_Unit:</label> 
+     <input type="text" name="package_unit" maxlength="10" required id="id_package_unit"  value="{{medi.package_unit}}">
+    </td>
+   <td>
+     <label for="id_package_price">Package_price:</label> 
+     <input type="number" name="package_price" step="any" required id="id_package_price"  value="{{medi.package_price}}">
+    </td>
+   <td>
+     <label for="id_drug">Drug_Name:</label> 
+     <input type="text" name="drug" maxlength="20" required id="id_drug"  value="{{medi.drug}}">
+    </td>
+    </tr>
+   
+    <tr>
+      <td>
+     <label for="id_per_unit">Per_unit:</label> 
+     <input type="text" name="per_unit" maxlength="10" required id="id_per_unit"  value="{{medi.per_unit}}">
+    </td>
+   <td>
+     <label for="id_indication">Indication:</label>
+      <input type="text" name="indication" maxlength="100" required id="id_indication" value="{{medi.indication}}">
+    </td>
+   <td>
+     <label for="id_contraindication">Containdication:</label>
+      <input type="text" name="contraindication" maxlength="100" required id="id_contraindication"  value="{{medi.contraindication}}">
+    </td>
+    </tr>
+    <tr>
+      <td>
+     <label for="id_caution">Caution:</label> 
+     <input type="text" name="caution" maxlength="500" required id="id_caution"  value="{{medi.caution}}">
+    </td>
+   <td>
+     <label for="id_side_effect">Side-Effect:</label>
+      <input type="text" name="side_effect" maxlength="500" required id="id_side_effect"  value="{{medi.side_effect}}">
+    </td>
+
+    </tr>
+    </table>
+  </center>
+
+    </form> -->
+
+    <div class="container mt-5">
+      <div class="card col-6 bg-secondary ml-auto mr-auto p-3">
+        <h2 class="text-center text-white">Update Medicine</h2>
+        <hr />
+        <div class="form mt-3">
+          <form method="POST" class="box">
+            {% csrf_token %}
+            <div class="row">
+              <div class="col-6">
+                <label class="text-white">Medicine_Name:</label>
+                <input
+                  type="text"
+                  class="form-control"
+                  name="mname"
+                  maxlength="30"
+                  id="id_mname"
+                  value="{{medi.mname}}"
+                  required
+                />
+              </div>
+              <div class="col-6">
+                <label class="text-white">Symptoms:</label>
+                <input
+                  type="text"
+                  class="form-control"
+                  name="symptoms"
+                  maxlength="1000"
+                  required
+                  id="id_symptoms"
+                  value="{{medi.symptoms}}"
+                />
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-6">
+                <label class="text-white">Diseases:</label>
+                <input
+                  type="text"
+                  class="form-control"
+                  name="diseases"
+                  maxlength="1000"
+                  required
+                  id="id_diseases"
+                  value="{{medi.diseases}}"
+                />
+              </div>
+              <div class="col-6">
+                <label class="text-white">Type:</label>
+                <input
+                  type="text"
+                  class="form-control"
+                  name="category"
+                  maxlength="50"
+                  required
+                  id="id_category"
+                  value="{{medi.category}}"
+                />
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-6">
+                <label class="text-white">Unit:</label>
+                <input
+                  type="text"
+                  class="form-control"
+                  name="unit"
+                  maxlength="10"
+                  required
+                  id="id_unit"
+                  value="{{medi.unit}}"
+                />
+              </div>
+              <div class="col-6">
+                <label class="text-white">Unit_price:</label>
+                <input
+                  type="number"
+                  class="form-control"
+                  name="unit_price"
+                  step="any"
+                  required
+                  id="id_unit_price"
+                  value="{{medi.unit_price}}"
+                />
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-6">
+                <label class="text-white">Package_unit:</label>
+                <input
+                  type="text"
+                  class="form-control"
+                  name="package_unit"
+                  maxlength="10"
+                  required
+                  id="id_package_unit"
+                  value="{{medi.package_unit}}"
+                />
+              </div>
+              <div class="col-6">
+                <label class="text-white">Package_price:</label>
+                <input
+                  type="number"
+                  class="form-control"
+                  name="package_price"
+                  step="any"
+                  required
+                  id="id_package_price"
+                  value="{{medi.package_price}}"
+                />
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-6">
+                <label class="text-white">Drug name:</label>
+                <input type="text" class="form-control" name="drug" maxlength="20" required id="id_drug"  value="{{medi.drug}}">
+              </div>
+              <div class="col-6">
+                <label class="text-white">Per_unit:</label>
+                <input type="text" class="form-control" name="per_unit" maxlength="10" required id="id_per_unit"  value="{{medi.per_unit}}">
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-6">
+                <label class="text-white">Indication:</label>
+                <input
+                  type="text"
+                  class="form-control"
+                  name="indication"
+                  maxlength="100"
+                  required
+                  id="id_indication"
+                  value="{{medi.indication}}"
+                />
+              </div>
+              <div class="col-6">
+                <label class="text-white">Contraindication:</label>
+                <input
+                  type="text"
+                  class="form-control"
+                  name="contraindication"
+                  maxlength="100"
+                  required
+                  id="id_contraindication"
+                  value="{{medi.contraindication}}"
+                />
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-6">
+                <label class="text-white">Caution:</label>
+                <input
+                  type="text"
+                  class="form-control"
+                  name="caution"
+                  maxlength="500"
+                  required
+                  id="id_caution"
+                  value="{{medi.caution}}"
+                />
+              </div>
+              <div class="col-6">
+                <label class="text-white">Side_effect:</label>
+                <input
+                  type="text"
+                  class="form-control"
+                  name="side_effect"
+                  maxlength="500"
+                  id="id_side_effect"
+                  value="{{medi.side_effect}}"
+                />
+              </div>
+            </div>
+            <hr/>
+            <div class="text-right mt-3">
+              <button type="submit" class="btn btn-outline-success">Update</button>
+              <a href="{% url 'chemist:Uploaded_Medi'%}" class="btn btn-outline-warning">Back</a>
+            </div> 
+          </form>
+        </div>
+      </div>
+    </div>
+  </body>
+</html>

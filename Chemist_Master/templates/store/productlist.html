@@ -1,0 +1,117 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Order List | AI Based Pharmacy System</title>
+  <link rel="stylesheet" type="text/css" href="{% static 'css/project-polish.css' %}">
+</head>
+<body>
+  <div class="app-shell">
+    <aside class="app-sidebar">
+      <div class="app-brand">
+        <div class="app-brand-mark">C</div>
+        <div>
+          <p class="app-brand-title">Chemist Portal</p>
+          <p class="app-brand-subtitle">Store workspace</p>
+        </div>
+      </div>
+
+      <nav class="app-nav" aria-label="Chemist navigation">
+        <a href="{% url 'chemist:ch_index' %}"><span class="nav-dot">H</span>Home</a>
+        <a href="{% url 'chemist:Dashboard' %}"><span class="nav-dot">D</span>Dashboard</a>
+        <a href="{% url 'chemist:order-medicine' %}"><span class="nav-dot">O</span>Order Medicine</a>
+        <a class="active" href="{% url 'chemist:ProductListView' %}"><span class="nav-dot">L</span>Order List</a>
+        <a href="{% url 'chemist:ReceivedStockView' %}"><span class="nav-dot">R</span>Received Stock</a>
+        <a href="{% url 'chemist:Uploaded_Medi' %}"><span class="nav-dot">M</span>Medicine Guide</a>
+        <a class="logout-link" href="{% url 'chemist:logout' %}"><span class="nav-dot">X</span>Logout</a>
+      </nav>
+    </aside>
+
+    <main class="app-main">
+      <header class="app-topbar">
+        <div>
+          <p class="topbar-kicker">Chemist portal</p>
+          <h1 class="topbar-title">Order List</h1>
+        </div>
+        <div class="user-chip">Logged in as <span>{{ username }}</span></div>
+      </header>
+
+      <div class="app-content">
+        {% if messages %}
+        <div class="message-stack">
+          {% for message in messages %}
+          <div class="app-alert {{ message.tags }}">{{ message }}</div>
+          {% endfor %}
+        </div>
+        {% endif %}
+
+        <section class="content-card">
+          <div class="card-heading">
+            <div>
+              <h2>Requested Medicines</h2>
+              <p>This page shows active medicine requests before supplier bill generation. Billed medicines move to Dashboard Bill Records.</p>
+            </div>
+            <a class="action-link" href="{% url 'chemist:order-medicine' %}">Add Order</a>
+          </div>
+
+          {% if data %}
+          <div class="table-shell">
+            <table class="data-table">
+              <thead>
+                <tr>
+                  <th>No.</th>
+                  <th>Supplier</th>
+                  <th>Medicine Name</th>
+                  <th>Quantity</th>
+                  <th>Order Status</th>
+                  <th>Payment</th>
+                  <th>Action</th>
+                </tr>
+              </thead>
+              <tbody>
+                {% for i in data %}
+                <tr>
+                  <td>{{ forloop.counter }}</td>
+                  <td>{{ i.supplier.uid }}</td>
+                  <td>{{ i.productname }}</td>
+                  <td>{{ i.productquantity }}</td>
+                  <td>
+                    {% if i.status %}
+                    <span class="status-pill accepted">Accepted</span>
+                    {% elif i.isDeny %}
+                    <span class="status-pill denied">Denied</span>
+                    {% else %}
+                    <span class="status-pill pending">Pending</span>
+                    {% endif %}
+                  </td>
+                  <td>
+                    {% if i.payment_status == 'Pending' %}
+                    <span class="status-pill pending">Payment Pending</span>
+                    {% else %}
+                    <span class="status-pill accepted">{{ i.payment_status }}</span>
+                    {% endif %}
+                  </td>
+                  <td>
+                    <div class="table-actions">
+                      {% if i.payment_status == 'Pending' %}
+                      <a class="action-link" href="{% url 'chemist:pay_product_order' i.id %}">Pay Now</a>
+                      {% endif %}
+                      <a class="action-link danger" href="{% url 'chemist:deleteproduct' i.id %}">Delete</a>
+                    </div>
+                  </td>
+                </tr>
+                {% endfor %}
+              </tbody>
+            </table>
+          </div>
+          {% else %}
+          <div class="empty-state">No active medicine request is available. If supplier generated a bill, check Dashboard Bill Records.</div>
+          {% endif %}
+        </section>
+      </div>
+    </main>
+  </div>
+</body>
+</html>

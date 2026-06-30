@@ -1,0 +1,28 @@
+.fieldset{
+border:1px solid #ccc;
+margin-bottom:20px;
+width: 59.6%;
+
+}
+
+.fieldset-bill{
+border:1px solid #ccc;
+margin-bottom:none;
+width:96%;
+
+
+}
+
+
+
+.legend{
+
+  width: 80%;
+ border:1px solid #ccc;
+  color:black;
+  font-size:100%;
+  text-align:left;
+  margin-bottom:37px;
+
+
+}

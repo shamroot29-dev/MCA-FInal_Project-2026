@@ -1,0 +1,157 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Chemist Dashboard | AI Based Pharmacy System</title>
+  <link rel="stylesheet" type="text/css" href="{% static 'css/project-polish.css' %}">
+</head>
+<body>
+  <div class="app-shell">
+    <aside class="app-sidebar">
+      <div class="app-brand">
+        <div class="app-brand-mark">C</div>
+        <div>
+          <p class="app-brand-title">Chemist Portal</p>
+          <p class="app-brand-subtitle">Store workspace</p>
+        </div>
+      </div>
+
+      <nav class="app-nav" aria-label="Chemist navigation">
+        <a href="{% url 'chemist:ch_index' %}"><span class="nav-dot">H</span>Home</a>
+        <a class="active" href="{% url 'chemist:Dashboard' %}"><span class="nav-dot">D</span>Dashboard</a>
+        <a href="{% url 'chemist:order-medicine' %}"><span class="nav-dot">O</span>Order Medicine</a>
+        <a href="{% url 'chemist:ProductListView' %}"><span class="nav-dot">L</span>Order List</a>
+        <a href="{% url 'chemist:ReceivedStockView' %}"><span class="nav-dot">R</span>Received Stock</a>
+        <a href="{% url 'chemist:Uploaded_Medi' %}"><span class="nav-dot">M</span>Medicine Guide</a>
+        <a class="logout-link" href="{% url 'chemist:logout' %}"><span class="nav-dot">X</span>Logout</a>
+      </nav>
+    </aside>
+
+    <main class="app-main">
+      <header class="app-topbar">
+        <div>
+          <p class="topbar-kicker">Chemist portal</p>
+          <h1 class="topbar-title">Dashboard</h1>
+        </div>
+        <div class="user-chip">Logged in as <span>{{ username }}</span></div>
+      </header>
+
+      <div class="app-content">
+        {% if messages %}
+        <div class="message-stack">
+          {% for message in messages %}
+          <div class="app-alert {{ message.tags }}">{{ message }}</div>
+          {% endfor %}
+        </div>
+        {% endif %}
+
+        <section class="hero-panel">
+          <div class="hero-card">
+            <p class="hero-eyebrow">Order tracking</p>
+            <h2 class="hero-title">Track requested medicines and supplier approval status.</h2>
+            <p class="hero-text">This dashboard shows your placed stock requests, their current status, and links to generated bills once supplier processing is complete.</p>
+            <div class="hero-actions">
+              <a class="action-link" href="{% url 'chemist:order-medicine' %}">Place New Order</a>
+              <a class="action-link secondary" href="{% url 'chemist:ProductListView' %}">View Order List</a>
+            </div>
+          </div>
+
+          <div class="notice-card">
+            <h3>What happens here?</h3>
+            <p>Pending means supplier has not accepted yet. After supplier generates a bill, accepted medicines move from request status into Bill Records.</p>
+          </div>
+        </section>
+
+        <section class="metric-grid">
+          <div class="metric-card">
+            <p class="metric-label">Total order requests</p>
+            <p class="metric-value">{{ data }}</p>
+          </div>
+          <div class="metric-card">
+            <p class="metric-label">Generated bills</p>
+            <p class="metric-value">{{ Bcount }}</p>
+          </div>
+          <div class="metric-card">
+            <p class="metric-label">Today quantity</p>
+            <p class="metric-value">{{ total }}</p>
+          </div>
+        </section>
+
+        <section class="content-card">
+          <div class="card-heading">
+            <div>
+              <h2>Request Status</h2>
+              <p>Pending, accepted, and denied requests are shown here until they are converted into a generated bill.</p>
+            </div>
+          </div>
+
+          <div class="table-shell">
+            <table class="data-table">
+              <thead>
+                <tr>
+                  <th>No.</th>
+                  <th>Supplier</th>
+                  <th>Medicine Name</th>
+                  <th>Status</th>
+                  <th>Payment</th>
+                </tr>
+              </thead>
+              <tbody>
+                {% for i in acceptedData %}
+                <tr>
+                  <td>{{ forloop.counter }}</td>
+                  <td>{{ i.supplier_email }}</td>
+                  <td>{{ i.name }}</td>
+                  <td>
+                    {% if i.status == 'Accepted' %}
+                    <span class="status-pill accepted">{{ i.status }}</span>
+                    {% elif i.status == 'Denied' %}
+                    <span class="status-pill denied">{{ i.status }}</span>
+                    {% else %}
+                    <span class="status-pill pending">{{ i.status }}</span>
+                    {% endif %}
+                  </td>
+                  <td>
+                    {% if i.payment_status == 'Pending' %}
+                    <span class="status-pill pending">Payment Pending</span>
+                    {% else %}
+                    <span class="status-pill accepted">{{ i.payment_status }}</span>
+                    {% endif %}
+                  </td>
+                </tr>
+                {% empty %}
+                <tr>
+                  <td colspan="5">No order request has been placed yet.</td>
+                </tr>
+                {% endfor %}
+              </tbody>
+            </table>
+          </div>
+        </section>
+
+        <section class="content-card">
+          <div class="card-heading">
+            <div>
+              <h2>Bill Records</h2>
+              <p>Accepted medicines disappear from the active request list after billing and can be reviewed here.</p>
+            </div>
+            <a class="action-link" href="{% url 'chemist:ReceivedStockView' %}">Open Received Stock</a>
+          </div>
+
+          {% if bset %}
+          <div class="table-actions">
+            {% for i in bset %}
+            <a class="action-link secondary" href="{% url 'chemist:SK_View_Bills' i %}">Bill {{ i }}</a>
+            {% endfor %}
+          </div>
+          {% else %}
+          <div class="empty-state">No bill has been generated yet.</div>
+          {% endif %}
+        </section>
+      </div>
+    </main>
+  </div>
+</body>
+</html>

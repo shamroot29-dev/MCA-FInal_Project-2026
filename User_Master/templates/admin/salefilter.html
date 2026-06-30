@@ -1,0 +1,73 @@
+{% extends 'admin/adminbase.html' %}
+
+{% block content %}
+
+<div id="page-wrapper">
+    <div class="container-fluid">
+        <div class="row bg-title">
+            <div class="col-lg-3 col-md-4 col-sm-4 col-xs-12">
+                <h4 class="page-title">Sales Page - {{ date }}</h4>
+            </div>
+            <div class="col-lg-9 col-sm-8 col-md-8 col-xs-12">
+                
+                <ol class="breadcrumb">
+                    <li><a href="#">Dashboard</a></li>
+                    <li class="active">Sales Page</li>
+                </ol>
+            </div>
+        </div>
+        <!-- /.row -->
+        <!-- .row -->
+        <div class="row">
+           
+            <div class="col-md-8 col-xs-12">
+                <div class="white-box">
+                    <form class="form-horizontal form-material" method="POST">
+                        {% csrf_token %}
+                        <div class="form-group">
+                            <label class="col-md-12">Product Name</label>
+                            <div class="col-md-12">
+                                <select class="form-control" id="id_ProductName" name="ProductName">
+                                    <option>Select Product</option>
+                                    {% for i in data %}
+                                    <option value="{{ i.productname }}">{{ i.productname }}</option>
+                                    {% endfor %}
+                                </select>
+                                <br>
+                                <button class="btn btn-success" type="submit">Submit</button>
+                        </div>
+                       
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+        <!-- /.row -->
+        <div class="panel panel-container" style="width: 80%;">
+			<div class="row" style="width: 100%;">
+				<div class="col-xs-6 col-md-3 col-lg-3 no-padding">
+					<div class="panel panel-teal panel-widget border-right">
+						<div class="row no-padding"><em class="fa fa-xl fa-shopping-cart color-blue"></em>
+							<div class="large">{{ filter }}</div>
+							<div class="text-muted">Todays Orders</div>
+						</div>
+					</div>
+				</div>
+				
+				
+				<div class="col-xs-6 col-md-3 col-lg-3 no-padding">
+					<div class="panel panel-red panel-widget ">
+						<div class="row no-padding"><em class="fa fa-money"></em>
+							<div class="large">₹ {{ total }} /-</div>
+							<div class="text-muted">Today Earnings</div>
+						</div>
+					</div>
+				</div>
+			</div><!--/.row-->
+		</div>
+    </div></div>
+    <!-- /.container-fluid -->
+    <footer class="footer text-center"> 2020 &copy; AI Based Pharmacy System </footer>
+</div>
+
+{% endblock %}

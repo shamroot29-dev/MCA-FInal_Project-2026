@@ -1,0 +1,73 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Edit Stock | AI Based Pharmacy System</title>
+  <link rel="stylesheet" type="text/css" href="{% static 'css/project-polish.css' %}">
+</head>
+<body>
+  <div class="app-shell">
+    <aside class="app-sidebar">
+      <div class="app-brand">
+        <div class="app-brand-mark">U</div>
+        <div>
+          <p class="app-brand-title">AI Based Pharmacy System</p>
+          <p class="app-brand-subtitle">Supplier workspace</p>
+        </div>
+      </div>
+      <nav class="app-nav" aria-label="Supplier navigation">
+        <a href="{% url 'user:adminDashboard' %}"><span class="nav-dot">D</span>Dashboard</a>
+        <a class="active" href="{% url 'user:viewstock' %}"><span class="nav-dot">S</span>Stock</a>
+        <a href="{% url 'user:confirm_order' %}"><span class="nav-dot">O</span>Orders</a>
+        <a href="{% url 'user:createGraph' %}"><span class="nav-dot">A</span>AI Forecast</a>
+        <a class="logout-link" href="{% url 'user:logout' %}"><span class="nav-dot">L</span>Logout</a>
+      </nav>
+    </aside>
+
+    <main class="app-main">
+      <header class="app-topbar">
+        <div>
+          <p class="topbar-kicker">Supplier portal</p>
+          <h1 class="topbar-title">Edit Stock</h1>
+        </div>
+      </header>
+
+      <div class="app-content">
+        <section class="content-card">
+          <div class="card-heading">
+            <div>
+              <h2>Update Medicine Stock</h2>
+              <p>Keep stock quantity and price accurate before accepting chemist orders.</p>
+            </div>
+          </div>
+
+          <form class="modern-form" method="POST">
+            {% csrf_token %}
+            <div class="form-grid">
+              <div>
+                <label for="id_productName">Medicine Name</label>
+                <input type="text" name="productName" id="id_productName" value="{{ prod.productName }}" required>
+              </div>
+              <div>
+                <label for="id_quantity">Quantity</label>
+                <input type="number" name="quantity" id="id_quantity" value="{{ prod.quantity }}" min="0" required>
+              </div>
+              <div>
+                <label for="id_price">Price</label>
+                <input type="number" name="price" id="id_price" value="{{ prod.price }}" min="0" required>
+              </div>
+            </div>
+
+            <div class="hero-actions">
+              <button type="submit" class="action-button">Save Stock</button>
+              <a class="action-link secondary" href="{% url 'user:viewstock' %}">Back to Stock</a>
+            </div>
+          </form>
+        </section>
+      </div>
+    </main>
+  </div>
+</body>
+</html>

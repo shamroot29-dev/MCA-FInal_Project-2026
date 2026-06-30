@@ -1,0 +1,128 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AI Assisted Medicine Finder | AI Based Pharmacy System</title>
+  <link rel="stylesheet" type="text/css" href="{% static 'css/project-polish.css' %}">
+</head>
+<body>
+  <div class="app-shell">
+    <aside class="app-sidebar">
+      <div class="app-brand">
+        <div class="app-brand-mark">C</div>
+        <div>
+          <p class="app-brand-title">Chemist Portal</p>
+          <p class="app-brand-subtitle">Store workspace</p>
+        </div>
+      </div>
+      <nav class="app-nav" aria-label="Chemist navigation">
+        <a href="{% url 'chemist:ch_index' %}"><span class="nav-dot">H</span>Home</a>
+        <a href="{% url 'chemist:Dashboard' %}"><span class="nav-dot">D</span>Dashboard</a>
+        <a href="{% url 'chemist:order-medicine' %}"><span class="nav-dot">O</span>Order Medicine</a>
+        <a href="{% url 'chemist:ProductListView' %}"><span class="nav-dot">L</span>Order List</a>
+        <a href="{% url 'chemist:ReceivedStockView' %}"><span class="nav-dot">R</span>Received Stock</a>
+        <a class="active" href="{% url 'chemist:Uploaded_Medi' %}"><span class="nav-dot">M</span>Medicine Guide</a>
+        <a class="logout-link" href="{% url 'chemist:logout' %}"><span class="nav-dot">X</span>Logout</a>
+      </nav>
+    </aside>
+
+    <main class="app-main">
+      <header class="app-topbar">
+        <div>
+          <p class="topbar-kicker">Chemist portal</p>
+          <h1 class="topbar-title">AI Assisted Medicine Finder</h1>
+        </div>
+        <div class="user-chip">Logged in as <span>{{ username }}</span></div>
+      </header>
+
+      <div class="app-content">
+        <section class="content-card">
+          <div class="card-heading">
+            <div>
+              <h2>Smart Medicine Reference</h2>
+              <p>Search by medicine, symptom, disease, or drug. The system narrows matching medicine records to support faster pharmacy decision-making.</p>
+            </div>
+          </div>
+
+          <form class="medicine-searchbar chemist-searchbar" method="GET">
+            <div class="medicine-search-input">
+              <span aria-hidden="true">AI Search</span>
+              <input type="search" name="q" value="{{ query }}" placeholder="Search fever, cough, disease, drug, or medicine name...">
+            </div>
+            <button class="action-button" type="submit">Search</button>
+            {% if query %}
+            <a class="action-link secondary" href="{% url 'chemist:Uploaded_Medi' %}">Clear</a>
+            {% endif %}
+          </form>
+
+          <div class="search-summary">
+            <strong>{{ result_count }}</strong>
+            <span>medicine record{{ result_count|pluralize }} found{% if query %} for "{{ query }}"{% endif %}</span>
+          </div>
+
+          {% if med %}
+          <div class="table-shell">
+            <table class="data-table" style="min-width: 1300px;">
+              <thead>
+                <tr>
+                  <th>S.No</th>
+                  <th>Medicine</th>
+                  <th>Symptoms</th>
+                  <th>Diseases</th>
+                  <th>Category</th>
+                  <th>Unit</th>
+                  <th>Unit Price</th>
+                  <th>Package Unit</th>
+                  <th>Package Price</th>
+                  <th>Drug</th>
+                  <th>Per Unit</th>
+                  <th>Indication</th>
+                  <th>Contraindication</th>
+                  <th>Caution</th>
+                  <th>Side Effect</th>
+                </tr>
+              </thead>
+              <tbody>
+                {% for i in page_obj %}
+                <tr>
+                  <td>{{ page_obj.start_index|add:forloop.counter0 }}</td>
+                  <td>{{ i.mname }}</td>
+                  <td>{{ i.symptoms }}</td>
+                  <td>{{ i.diseases }}</td>
+                  <td>{{ i.category }}</td>
+                  <td>{{ i.unit }}</td>
+                  <td>{{ i.unit_price }}</td>
+                  <td>{{ i.package_unit }}</td>
+                  <td>{{ i.package_price }}</td>
+                  <td>{{ i.drug }}</td>
+                  <td>{{ i.per_unit }}</td>
+                  <td>{{ i.indication }}</td>
+                  <td>{{ i.contraindication }}</td>
+                  <td>{{ i.caution }}</td>
+                  <td>{{ i.side_effect }}</td>
+                </tr>
+                {% endfor %}
+              </tbody>
+            </table>
+          </div>
+          {% else %}
+          <div class="empty-state">No medicine matched your search. Try fever, cough, Paracetamol, cold, infection, or a broader term.</div>
+          {% endif %}
+
+          <nav class="action-row" aria-label="Medicine pages">
+            {% if page_obj.has_previous %}
+              <a class="btn-secondary-soft" href="?{% if query_string %}{{ query_string }}&{% endif %}page={{ page_obj.previous_page_number }}">Previous</a>
+            {% endif %}
+            <span>Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}</span>
+            {% if page_obj.has_next %}
+              <a class="btn-secondary-soft" href="?{% if query_string %}{{ query_string }}&{% endif %}page={{ page_obj.next_page_number }}">Next</a>
+            {% endif %}
+          </nav>
+        </section>
+      </div>
+    </main>
+  </div>
+</body>
+</html>

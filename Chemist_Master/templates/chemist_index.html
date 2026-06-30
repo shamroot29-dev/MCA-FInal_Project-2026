@@ -1,0 +1,89 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Chemist Portal | AI Based Pharmacy System</title>
+  <link rel="stylesheet" type="text/css" href="{% static 'css/project-polish.css' %}">
+</head>
+<body>
+  <div class="app-shell">
+    <aside class="app-sidebar">
+      <div class="app-brand">
+        <div class="app-brand-mark">C</div>
+        <div>
+          <p class="app-brand-title">Chemist Portal</p>
+          <p class="app-brand-subtitle">Store workspace</p>
+        </div>
+      </div>
+
+      <nav class="app-nav" aria-label="Chemist navigation">
+        <a class="active" href="{% url 'chemist:ch_index' %}"><span class="nav-dot">H</span>Home</a>
+        <a href="{% url 'chemist:Dashboard' %}"><span class="nav-dot">D</span>Dashboard</a>
+        <a href="{% url 'chemist:order-medicine' %}"><span class="nav-dot">O</span>Order Medicine</a>
+        <a href="{% url 'chemist:ProductListView' %}"><span class="nav-dot">L</span>Order List</a>
+        <a href="{% url 'chemist:ReceivedStockView' %}"><span class="nav-dot">R</span>Received Stock</a>
+        <a href="{% url 'chemist:Uploaded_Medi' %}"><span class="nav-dot">M</span>Medicine Guide</a>
+        <a class="logout-link" href="{% url 'chemist:logout' %}"><span class="nav-dot">X</span>Logout</a>
+      </nav>
+    </aside>
+
+    <main class="app-main">
+      <header class="app-topbar">
+        <div>
+          <p class="topbar-kicker">Chemist portal</p>
+          <h1 class="topbar-title">Welcome</h1>
+        </div>
+        <div class="user-chip">Logged in as <span>{{ username }}</span></div>
+      </header>
+
+      <div class="app-content">
+        {% if messages %}
+        <div class="message-stack">
+          {% for message in messages %}
+          <div class="app-alert {{ message.tags }}">{{ message }}</div>
+          {% endfor %}
+        </div>
+        {% endif %}
+
+        <section class="hero-panel">
+          <div class="hero-card">
+            <p class="hero-eyebrow">Store operations</p>
+            <h2 class="hero-title">Order medicines, track supplier approval, and view generated bills clearly.</h2>
+            <p class="hero-text">Use this portal to place stock requests, check whether orders are pending or accepted, and open previous bill records without searching through old pages.</p>
+            <div class="hero-actions">
+              <a class="action-link" href="{% url 'chemist:Dashboard' %}">Open Dashboard</a>
+              <a class="action-link secondary" href="{% url 'chemist:order-medicine' %}">Order Medicine</a>
+            </div>
+          </div>
+
+          <div class="notice-card">
+            <h3>Page guide</h3>
+            <ul class="notice-list">
+              <li>Dashboard shows order status and bill links.</li>
+              <li>Order Medicine creates a new stock request.</li>
+              <li>Medicine Guide lists reference medicine details.</li>
+            </ul>
+          </div>
+        </section>
+
+        <section class="metric-grid">
+          <div class="metric-card">
+            <p class="metric-label">Session</p>
+            <p class="metric-value">Active</p>
+          </div>
+          <div class="metric-card">
+            <p class="metric-label">Ordering</p>
+            <p class="metric-value">Ready</p>
+          </div>
+          <div class="metric-card">
+            <p class="metric-label">Bills</p>
+            <p class="metric-value">Track</p>
+          </div>
+        </section>
+      </div>
+    </main>
+  </div>
+</body>
+</html>

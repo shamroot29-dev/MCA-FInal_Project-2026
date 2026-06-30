@@ -1,0 +1,85 @@
+{% extends 'admin/adminbase.html' %}
+
+{% block content %}
+
+<div id="page-wrapper">
+    <div class="container-fluid">
+        <div class="row bg-title">
+            <div class="col-lg-3 col-md-4 col-sm-4 col-xs-12">
+                <h4 class="page-title">Month Prediction Page</h4>
+            </div>
+            <div class="col-lg-9 col-sm-8 col-md-8 col-xs-12">
+                
+                <ol class="breadcrumb">
+                    <li><a href="#">Dashboard</a></li>
+                    <li class="active">Month Prediction Page</li>
+                </ol>
+            </div>
+        </div>
+        <!-- /.row -->
+        <!-- .row -->
+
+        <h3>Average Prediction of Month - {{date}}</h3>
+        <div class="panel panel-container">
+            
+			<div class="row">
+				<div class="col-xs-6 col-md-3 col-lg-3 no-padding">
+					<div class="panel panel-teal panel-widget border-right">
+						<div class="row no-padding"><em class="fa fa-xl fa-shopping-cart color-blue"></em>
+							<div class="large">{{ avgqty }}</div>
+							<div class="text-muted">Average Product Sold per month</div>
+						</div>
+					</div>
+				</div>
+				<div class="col-xs-6 col-md-3 col-lg-3 no-padding">
+					<div class="panel panel-blue panel-widget border-right">
+						<div class="row no-padding"><em class="fa fa-credit-card-alt color-orange"></em>
+							<div class="large">₹ {{avgearning}}</div>
+							<div class="text-muted">Average Earning per month</div>
+						</div>
+					</div>
+				</div>
+			
+            </div><!--/.row-->
+            
+             <!-- .row -->
+</div>
+
+        <h3>Prediction Chart</h3>
+     
+
+        <div id="container"></div>
+        <script src="https://code.highcharts.com/highcharts.src.js"></script>
+        <script>
+          Highcharts.chart('container', {
+              chart: {
+                  type: 'column'
+              },
+              title: {
+                  text: 'Graph of Product Prediction'
+              },
+              xAxis: {
+                  categories: []
+              },
+               series: [
+              {
+                  name: 'Trending',
+                  data: [{{ t }},{{ t }},{{ t }},{{ t }},{{ t }}]
+              }, {
+                  name: 'Product',
+                  data: [{{ t }},{{ t }},{{ t }},{{ t }},{{ t }}]
+              }, 
+              {
+                  name: '{{ p }}',
+                  data: [{{ t }},{{ t }},{{ t }},{{ t }},{{ t }}]
+              }]
+          });
+        </script>
+
+    </div>
+   
+    <!-- /.container-fluid -->
+    <footer class="footer text-center"> 2020 &copy; AI Based Pharmacy System </footer>
+</div>
+
+{% endblock %}

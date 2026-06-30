@@ -1,0 +1,99 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Smart Stock Details | AI Based Pharmacy System</title>
+  <link rel="stylesheet" type="text/css" href="{% static 'css/project-polish.css' %}">
+</head>
+<body>
+  <div class="app-shell">
+    <aside class="app-sidebar">
+      <div class="app-brand">
+        <div class="app-brand-mark">U</div>
+        <div>
+          <p class="app-brand-title">AI Based Pharmacy System</p>
+          <p class="app-brand-subtitle">Supplier workspace</p>
+        </div>
+      </div>
+      <nav class="app-nav" aria-label="Supplier navigation">
+        <a href="{% url 'user:adminDashboard' %}"><span class="nav-dot">D</span>Dashboard</a>
+        <a class="active" href="{% url 'user:viewstock' %}"><span class="nav-dot">S</span>Stock</a>
+        <a href="{% url 'user:confirm_order' %}"><span class="nav-dot">O</span>Orders</a>
+        <a href="{% url 'user:createGraph' %}"><span class="nav-dot">A</span>AI Forecast</a>
+        <a class="logout-link" href="{% url 'user:logout' %}"><span class="nav-dot">L</span>Logout</a>
+      </nav>
+    </aside>
+
+    <main class="app-main">
+      <header class="app-topbar">
+        <div>
+          <p class="topbar-kicker">Supplier portal</p>
+          <h1 class="topbar-title">AI Smart Stock Details</h1>
+        </div>
+      </header>
+
+      <div class="app-content">
+        {% if messages %}
+        <div class="message-stack">
+          {% for message in messages %}
+          <div class="app-alert {{ message.tags }}">{{ message }}</div>
+          {% endfor %}
+        </div>
+        {% endif %}
+
+        <section class="content-card">
+          <div class="card-heading">
+            <div>
+              <h2>Available Stock With AI Alerts</h2>
+              <p>Review quantity, rate, net value, AI predicted demand, suggested stock, and low-stock status before accepting chemist orders.</p>
+            </div>
+            <a class="action-link" href="{% url 'user:addstock' %}">Add Medicine</a>
+          </div>
+
+          {% if data %}
+          <div class="table-shell">
+            <table class="data-table" style="min-width: 1120px;">
+              <thead>
+                <tr>
+                  <th>Stock Name</th>
+                  <th>Quantity</th>
+                  <th>Rate</th>
+                  <th>Net Price</th>
+                  <th>AI Forecast</th>
+                  <th>Suggested Stock</th>
+                  <th>Need to Add</th>
+                  <th>AI Status</th>
+                  <th>Action</th>
+                </tr>
+              </thead>
+              <tbody>
+                {% for i in data %}
+                <tr>
+                  <td>{{ i.productName }}</td>
+                  <td>{{ i.quantity }}</td>
+                  <td>{{ i.price }}</td>
+                  <td>{{ i.net_price }}</td>
+                  <td>
+                    <strong>{{ i.ai.predicted }}</strong>
+                    <div class="field-help">{{ i.ai.method }} | {{ i.ai.confidence }} confidence</div>
+                  </td>
+                  <td>{{ i.ai.suggested_stock }}</td>
+                  <td>{{ i.ai.need_to_add }}</td>
+                  <td><span class="status-pill {{ i.ai.status_class }}">{{ i.ai.status }}</span></td>
+                  <td><a class="action-link" href="{% url 'user:editstock' i.id %}">Edit</a></td>
+                </tr>
+                {% endfor %}
+              </tbody>
+            </table>
+          </div>
+          {% else %}
+          <div class="empty-state">No stock is available yet.</div>
+          {% endif %}
+        </section>
+      </div>
+    </main>
+  </div>
+</body>
+</html>

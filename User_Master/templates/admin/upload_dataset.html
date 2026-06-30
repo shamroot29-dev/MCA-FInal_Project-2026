@@ -1,0 +1,88 @@
+{% extends 'admin/adminbase.html' %}
+{% load static %}
+
+{% block content %}
+<link rel="stylesheet" type="text/css" href="{% static 'css/project-polish.css' %}">
+<style>
+    
+    .container {
+        margin: 20px 30px;
+        padding: 20px;
+    }
+
+    .submit {
+        cursor: pointer;
+        border-radius: 5em;
+        color: #fff;
+        border: 0;
+        padding-left: 40px;
+        padding-right: 40px;
+        padding-bottom: 10px;
+        padding-top: 10px;
+        font-family: 'Ubuntu', sans-serif;
+        font-size: 13px;
+        box-shadow: 0 0 20px 1px rgba(0, 0, 0, 0.04);
+        background: linear-gradient(to right, #0F0C6E, #2409bd, #07046d);
+        transition: all 0.5s cubic-bezier(0.87, 0.29, 0, 0.68);
+    }
+
+    .submit:hover {
+        transition: all 0.5s cubic-bezier(0.87, 0.29, 0, 0.68);
+        background: linear-gradient(to right, #8f0303, #0F0C6E, #8f0303);
+    }
+    
+    .type-choose{
+        border-radius: 6px;
+        background: linear-gradient(to right, #ca7171, #0b94b6, #1d9fb1);
+        border: 0;
+        box-shadow: 0 0 4px rgb(0 0 0 / 30%);
+
+        display: block;
+        width: auto;
+        font-size: 16px;
+        font-weight: 550;
+      }
+      
+      
+      
+</style>
+
+<div id="page-wrapper">
+    <div class="container-fluid">
+        <div class="row bg-title">
+            <div class="col-lg-3 col-md-4 col-sm-4 col-xs-12">
+                <h4 class="page-title">Add Stock </h4>
+            </div>
+            <div class="col-lg-9 col-sm-8 col-md-8 col-xs-12">
+                
+                <ol class="breadcrumb">
+                    <li><a href="{% url 'AdminDashboard' %}">Dashboard</a></li>
+                    <!-- <li><a href="{% url 'viewstock' %}">view stock</a></li> -->
+                    <li class="active">Add Stock</li>
+                </ol>
+            </div>
+        </div>
+        <h1> Import Dataset </h1>
+        <div class="container">
+            <div class="card">
+                <form method="POST" enctype="multipart/form-data">
+                    {% csrf_token %}
+                    <input class="type-choose" type="file" name="file" id="file">        
+                    <br>
+                    <input class="submit" type="submit" value="Upload">
+                </form>
+                
+            </div>
+        </div>
+    
+        {% if msg %}
+        <div class="app-alert info">{{ msg }}</div>
+        {% endif %}
+        
+        <!-- /.row -->
+    </div>
+    <!-- /.container-fluid -->
+    <footer class="footer text-center"> 2020 &copy; AI Based Pharmacy System </footer>
+</div>
+
+{% endblock %}

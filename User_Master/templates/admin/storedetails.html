@@ -1,0 +1,129 @@
+{% load static %}
+{% load rec_data %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Chemist Request Details | AI Based Pharmacy System</title>
+  <link rel="stylesheet" type="text/css" href="{% static 'css/project-polish.css' %}">
+</head>
+<body>
+  <div class="app-shell">
+    <aside class="app-sidebar">
+      <div class="app-brand">
+        <div class="app-brand-mark">U</div>
+        <div>
+          <p class="app-brand-title">AI Based Pharmacy System</p>
+          <p class="app-brand-subtitle">Supplier workspace</p>
+        </div>
+      </div>
+      <nav class="app-nav" aria-label="Supplier navigation">
+        <a href="{% url 'user:adminDashboard' %}"><span class="nav-dot">D</span>Dashboard</a>
+        <a href="{% url 'user:viewstock' %}"><span class="nav-dot">S</span>Stock</a>
+        <a class="active" href="{% url 'user:confirm_order' %}"><span class="nav-dot">O</span>Orders</a>
+        <a href="{% url 'user:createGraph' %}"><span class="nav-dot">A</span>AI Forecast</a>
+        <a class="logout-link" href="{% url 'user:logout' %}"><span class="nav-dot">L</span>Logout</a>
+      </nav>
+    </aside>
+
+    <main class="app-main">
+      <header class="app-topbar">
+        <div>
+          <p class="topbar-kicker">Supplier portal</p>
+          <h1 class="topbar-title">Chemist Request Details</h1>
+        </div>
+      </header>
+
+      <div class="app-content">
+        {% if messages %}
+        <div class="message-stack">
+          {% for message in messages %}
+          <div class="app-alert {{ message.tags }}">{{ message }}</div>
+          {% endfor %}
+        </div>
+        {% endif %}
+
+        <section class="metric-grid">
+          <div class="metric-card">
+            <p class="metric-label">Chemist Email</p>
+            <p class="metric-value" style="font-size: 18px;">{{ data.cid }}</p>
+          </div>
+          <div class="metric-card">
+            <p class="metric-label">Person Name</p>
+            <p class="metric-value" style="font-size: 18px;">{{ data.chemistfname }}</p>
+          </div>
+          <div class="metric-card">
+            <p class="metric-label">Contact</p>
+            <p class="metric-value" style="font-size: 18px;">{{ data.chemistcontactno }}</p>
+          </div>
+        </section>
+
+        <section class="content-card">
+          <div class="card-heading">
+            <div>
+              <h2>Requested Medicines</h2>
+              <p>Accept only when enough supplier stock is available. Availability is shown beside each requested quantity.</p>
+            </div>
+          </div>
+
+          {% if prod %}
+          <div class="table-shell">
+            <table class="data-table">
+              <thead>
+                <tr>
+                  <th>No.</th>
+                  <th>Medicine Name</th>
+                  <th>Requested Qty</th>
+                  <th>Availability</th>
+                  <th>Payment</th>
+                  <th>Action</th>
+                </tr>
+              </thead>
+              <tbody>
+                {% for i in prod %}
+                <tr>
+                  <td>{{ forloop.counter }}</td>
+                  <td>{{ i.productname }}</td>
+                  <td>{{ i.productquantity }}</td>
+                  <td>
+                    {% if i|qty_check %}
+                    <span class="status-pill accepted">Available {{ i|qty_data }}</span>
+                    {% else %}
+                    <span class="status-pill denied">Not Available {{ i|qty_data }}</span>
+                    {% endif %}
+                  </td>
+                  <td>
+                    {% if i.payment_status == 'Pending' %}
+                    <span class="status-pill pending">Payment Pending</span>
+                    {% else %}
+                    <span class="status-pill accepted">{{ i.payment_status }}</span>
+                    {% endif %}
+                  </td>
+                  <td>
+                    {% if i|qty_check %}
+                    <div class="table-actions">
+                      <a class="action-link" href="{% url 'user:accept_data' data.id i.id %}">Accept</a>
+                      <a class="action-link danger" href="{% url 'user:denied_data' data.id i.id %}">Deny</a>
+                    </div>
+                    {% else %}
+                    <div class="table-actions">
+                      <span class="status-pill pending">Cannot accept</span>
+                      <a class="action-link danger" href="{% url 'user:denied_data' data.id i.id %}">Deny</a>
+                    </div>
+                    {% endif %}
+                  </td>
+                </tr>
+                {% endfor %}
+              </tbody>
+            </table>
+          </div>
+          {% else %}
+          <div class="empty-state">This chemist has not placed any medicine request yet.</div>
+          {% endif %}
+        </section>
+      </div>
+    </main>
+  </div>
+</body>
+</html>

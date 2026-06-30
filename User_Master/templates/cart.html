@@ -1,0 +1,130 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Wishlist | AI Based Pharmacy System</title>
+  <script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
+  <link rel="stylesheet" type="text/css" href="{% static 'css/bootstrap.min.css' %}">
+  <link rel="stylesheet" type="text/css" href="{% static 'css/project-polish.css' %}">
+</head>
+<body>
+  <main class="page-wrap">
+    <header class="page-header">
+      <div>
+        <h1 class="page-title">My Wishlist</h1>
+        <p class="page-subtitle">Welcome, {{ users.userfname }} {{ users.usermname }} {{ users.userlname }}. You have <span id="mycart">0</span> items selected.</p>
+      </div>
+      <a class="btn-secondary-soft" href="{% url 'user:Userindex' %}">Search More Medicine</a>
+    </header>
+
+    {% if messages %}
+    <div class="message-stack">
+      {% for message in messages %}
+        <div class="app-alert {{ message.tags }}">{{ message }}</div>
+      {% endfor %}
+    </div>
+    {% endif %}
+
+    {% if msz %}
+      <div class="{{ cls }} mt-3">{{ msz }}</div>
+    {% endif %}
+
+    <section class="responsive-card">
+      <div class="table-responsive-clean">
+        <table class="table cart">
+          <thead>
+            <tr>
+              <th>Medicine</th>
+              <th>Drug</th>
+              <th>Quantity</th>
+              <th>Price</th>
+              <th>Action</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for i in items %}
+            <tr id="row{{ i.id }}">
+              <td>{{ i.medicine.mname }}</td>
+              <td>{{ i.medicine.drug }}</td>
+              <td>
+                <div style="display:flex; gap:8px; align-items:center; min-width:150px;">
+                  <button type="button" class="btn btn-primary" onclick="change_quan('{{ i.id }}','minus')">-</button>
+                  <input value="{{ i.quantity }}" class="form-control" id="cart{{ i.id }}" style="max-width:70px; text-align:center;">
+                  <button type="button" class="btn btn-primary" onclick="change_quan('{{ i.id }}','plus')">+</button>
+                </div>
+              </td>
+              <td>{{ i.medicine.package_price }}</td>
+              <td><button type="button" onclick="remove_cart('{{ i.id }}')" class="btn btn-danger">Remove</button></td>
+            </tr>
+            {% empty %}
+            <tr>
+              <td colspan="5">
+                <div class="app-alert info">Your wishlist is empty. Search medicines and add items here.</div>
+              </td>
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <section class="responsive-card" style="margin-top:20px; max-width:360px;">
+      <table class="table cart">
+        <tr>
+          <td><strong>Total</strong></td>
+          <td id="item_total">0</td>
+        </tr>
+        <tr>
+          <td><strong>Quantity</strong></td>
+          <td id="quantity">0 Items</td>
+        </tr>
+      </table>
+    </section>
+  </main>
+
+  <script>
+    function grandtotal(){
+      $.ajax({
+        url:"{% url 'user:cartData' %}",
+        type:'get',
+        success:function(data){
+          $("#item_total").html("&#8377;"+Math.round(data.Total));
+          $("#quantity").html(data.quan+" Items");
+          $("#mycart").html(data.quan);
+        }
+      });
+    }
+    grandtotal();
+
+    function change_quan(id,action){
+      let old = parseInt($("#cart"+id).val() || "0");
+      let quan = action == "plus" ? old + 1 : old - 1;
+      $("#cart"+id).val(quan);
+      $.ajax({
+        url:"{% url 'user:changeData' %}",
+        type:"get",
+        data:{cid:id, quantity:quan},
+        success:function(data){
+          grandtotal();
+          if(data==0){
+            remove_cart(id);
+          }
+        }
+      });
+    }
+
+    function remove_cart(id){
+      $.ajax({
+        url:"{% url 'user:changeData' %}",
+        data:{delete_cart:id},
+        success:function(){
+          grandtotal();
+          $("#row"+id).hide();
+        }
+      });
+    }
+  </script>
+</body>
+</html>

@@ -1,0 +1,204 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Order Medicine | AI Based Pharmacy System</title>
+  <link rel="stylesheet" type="text/css" href="{% static 'css/project-polish.css' %}">
+</head>
+<body>
+  <div class="app-shell">
+    <aside class="app-sidebar">
+      <div class="app-brand">
+        <div class="app-brand-mark">C</div>
+        <div>
+          <p class="app-brand-title">Chemist Portal</p>
+          <p class="app-brand-subtitle">Store workspace</p>
+        </div>
+      </div>
+
+      <nav class="app-nav" aria-label="Chemist navigation">
+        <a href="{% url 'chemist:ch_index' %}"><span class="nav-dot">H</span>Home</a>
+        <a href="{% url 'chemist:Dashboard' %}"><span class="nav-dot">D</span>Dashboard</a>
+        <a class="active" href="{% url 'chemist:order-medicine' %}"><span class="nav-dot">O</span>Order Medicine</a>
+        <a href="{% url 'chemist:ProductListView' %}"><span class="nav-dot">L</span>Order List</a>
+        <a href="{% url 'chemist:ReceivedStockView' %}"><span class="nav-dot">R</span>Received Stock</a>
+        <a href="{% url 'chemist:Uploaded_Medi' %}"><span class="nav-dot">M</span>Medicine Guide</a>
+        <a class="logout-link" href="{% url 'chemist:logout' %}"><span class="nav-dot">X</span>Logout</a>
+      </nav>
+    </aside>
+
+    <main class="app-main">
+      <header class="app-topbar">
+        <div>
+          <p class="topbar-kicker">Chemist portal</p>
+          <h1 class="topbar-title">Order Medicine</h1>
+        </div>
+        <div class="user-chip">Logged in as <span>{{ username }}</span></div>
+      </header>
+
+      <div class="app-content">
+        {% if messages %}
+        <div class="message-stack">
+          {% for message in messages %}
+          <div class="app-alert {{ message.tags }}">{{ message }}</div>
+          {% endfor %}
+        </div>
+        {% endif %}
+
+        <section class="hero-panel">
+          <div class="hero-card">
+            <p class="hero-eyebrow">Create request</p>
+            <h2 class="hero-title">Select available stock, enter quantity, and submit a supplier request.</h2>
+            <p class="hero-text">After submission, the request is stored in your order list. Supplier can accept it when stock is available, and the status will update on your dashboard.</p>
+          </div>
+
+          <div class="notice-card">
+            <h3>Before ordering</h3>
+            <ul class="notice-list">
+              <li>Choose the correct medicine from stock.</li>
+              <li>Enter a valid delivery/request date.</li>
+              <li>Quantity should be between 1 and 500.</li>
+              <li>Payment can be completed now or after supplier billing.</li>
+            </ul>
+          </div>
+        </section>
+
+        <section class="content-card">
+          <div class="card-heading">
+            <div>
+              <h2>New Stock Request</h2>
+              <p>This form creates a new medicine order request for supplier approval.</p>
+            </div>
+          </div>
+
+          <form class="modern-form" method="POST">
+            {% csrf_token %}
+            <div class="form-grid">
+              <div>
+                <label for="id_supplier">Supplier</label>
+                <select name="supplier" id="id_supplier" required>
+                  {% if suppliers %}
+                  <option value="">Select supplier</option>
+                  {% for supplier in suppliers %}
+                  <option value="{{ supplier.id }}">{{ supplier.uid }}</option>
+                  {% endfor %}
+                  {% else %}
+                  <option value="">No supplier available</option>
+                  {% endif %}
+                </select>
+                <div class="field-help">Choose the supplier you want to order from.</div>
+              </div>
+
+              <div>
+                <label for="id_productname">Medicine</label>
+                <select name="productname" id="id_productname" required>
+                  {% if prods %}
+                  {% for i in prods %}
+                  <option value="{{ i.id }}" data-supplier="{{ i.supplier_id }}" data-stock="{{ i.quantity }}">{{ i.productName }} - Qty {{ i.quantity }} - Rate {{ i.price }}</option>
+                  {% endfor %}
+                  {% else %}
+                  <option value="">No stock available</option>
+                  {% endif %}
+                </select>
+              </div>
+
+              <div>
+                <label for="id_data">Request Date</label>
+                <input type="date" name="data" id="id_data" required>
+              </div>
+
+              <div>
+                <label for="id_productquantity">Quantity</label>
+                <input type="number" name="productquantity" id="id_productquantity" min="1" max="500" maxlength="3" placeholder="Enter quantity" required>
+                <div class="field-help" id="stock_hint">Select a medicine to see available quantity.</div>
+              </div>
+
+              <div>
+                <label>Payment Option</label>
+                <div class="choice-stack">
+                  <label class="choice-option">
+                    <input type="radio" name="payment_timing" value="later" checked>
+                    <span>
+                      <strong>Pay Later</strong>
+                      <small>The order will be sent to the supplier. Payment can be completed after billing or after receiving the medicines.</small>
+                    </span>
+                  </label>
+                  <label class="choice-option">
+                    <input type="radio" name="payment_timing" value="now">
+                    <span>
+                      <strong>Pay Now</strong>
+                      <small>Complete the Razorpay Test Mode payment before the order request is saved.</small>
+                    </span>
+                  </label>
+                </div>
+              </div>
+            </div>
+
+            <div class="hero-actions">
+              <button type="submit" class="action-button"{% if not prods %} disabled{% endif %}>Submit Order</button>
+              <a class="action-link secondary" href="{% url 'chemist:ProductListView' %}">View Existing Orders</a>
+            </div>
+          </form>
+        </section>
+      </div>
+    </main>
+  </div>
+  <script>
+    (function () {
+      var medicineSelect = document.getElementById('id_productname');
+      var supplierSelect = document.getElementById('id_supplier');
+      var quantityInput = document.getElementById('id_productquantity');
+      var stockHint = document.getElementById('stock_hint');
+
+      function syncMedicineOptions() {
+        if (!supplierSelect || !medicineSelect) {
+          return;
+        }
+        var selectedSupplier = supplierSelect.value;
+        var firstVisibleIndex = -1;
+        for (var i = 0; i < medicineSelect.options.length; i += 1) {
+          var option = medicineSelect.options[i];
+          var optionSupplier = option.getAttribute('data-supplier');
+          var isVisible = selectedSupplier && optionSupplier === selectedSupplier;
+          option.hidden = !isVisible;
+          option.disabled = !isVisible;
+          if (isVisible && firstVisibleIndex === -1) {
+            firstVisibleIndex = i;
+          }
+        }
+        medicineSelect.selectedIndex = firstVisibleIndex;
+        syncQuantityLimit();
+      }
+
+      function syncQuantityLimit() {
+        if (!medicineSelect || !quantityInput) {
+          return;
+        }
+        var selectedOption = medicineSelect.options[medicineSelect.selectedIndex];
+        var availableStock = selectedOption ? parseInt(selectedOption.getAttribute('data-stock') || '0', 10) : 0;
+        if (availableStock > 0) {
+          quantityInput.max = availableStock;
+          stockHint.textContent = 'Available stock: ' + availableStock + ' units. You cannot order more than this.';
+          if (parseInt(quantityInput.value || '0', 10) > availableStock) {
+            quantityInput.value = availableStock;
+          }
+        } else {
+          quantityInput.max = 1;
+          stockHint.textContent = 'Select a supplier to see available medicines.';
+        }
+      }
+
+      if (supplierSelect) {
+        supplierSelect.addEventListener('change', syncMedicineOptions);
+        syncMedicineOptions();
+      }
+      if (medicineSelect) {
+        medicineSelect.addEventListener('change', syncQuantityLimit);
+        syncQuantityLimit();
+      }
+    })();
+  </script>
+</body>
+</html>

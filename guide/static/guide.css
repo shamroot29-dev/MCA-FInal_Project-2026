@@ -1,0 +1,36 @@
+body
+{
+    background-color: rgba(13, 70, 83, 0.78);
+}
+table
+{
+    border-color:black;
+    height:700px;
+    width:1100px;
+    
+    text-align: center;
+    font-size: 20px;
+    color:darkseagreen;
+    font-family: Arial, Helvetica, sans-serif;
+}
+a
+{
+    color:darkseagreen;
+    font-size:23px;
+    text-decoration: none;
+}
+table tr td.menu
+{
+    font-size: 22px;
+}
+
+.btn btn-primary ac
+{
+    text-align: center;
+    border: 1px solid white;
+    margin-left:90px;
+}
+
+.page{
+    box-shadow: 1px 2px 2px white;
+}

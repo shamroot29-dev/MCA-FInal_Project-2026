@@ -1,0 +1,73 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Edit Order | AI Based Pharmacy System</title>
+  <link rel="stylesheet" type="text/css" href="{% static 'css/project-polish.css' %}">
+</head>
+<body>
+  <div class="app-shell">
+    <aside class="app-sidebar">
+      <div class="app-brand">
+        <div class="app-brand-mark">C</div>
+        <div>
+          <p class="app-brand-title">Chemist Portal</p>
+          <p class="app-brand-subtitle">Store workspace</p>
+        </div>
+      </div>
+
+      <nav class="app-nav" aria-label="Chemist navigation">
+        <a href="{% url 'chemist:ch_index' %}"><span class="nav-dot">H</span>Home</a>
+        <a href="{% url 'chemist:Dashboard' %}"><span class="nav-dot">D</span>Dashboard</a>
+        <a href="{% url 'chemist:order-medicine' %}"><span class="nav-dot">O</span>Order Medicine</a>
+        <a class="active" href="{% url 'chemist:ProductListView' %}"><span class="nav-dot">L</span>Order List</a>
+        <a href="{% url 'chemist:ReceivedStockView' %}"><span class="nav-dot">R</span>Received Stock</a>
+        <a href="{% url 'chemist:Uploaded_Medi' %}"><span class="nav-dot">M</span>Medicine Guide</a>
+        <a class="logout-link" href="{% url 'chemist:logout' %}"><span class="nav-dot">X</span>Logout</a>
+      </nav>
+    </aside>
+
+    <main class="app-main">
+      <header class="app-topbar">
+        <div>
+          <p class="topbar-kicker">Chemist portal</p>
+          <h1 class="topbar-title">Edit Order</h1>
+        </div>
+        <div class="user-chip">Logged in as <span>{{ username }}</span></div>
+      </header>
+
+      <div class="app-content">
+        <section class="content-card">
+          <div class="card-heading">
+            <div>
+              <h2>Update Medicine Request</h2>
+              <p>Use this form to correct the medicine name or requested quantity before supplier processing.</p>
+            </div>
+          </div>
+
+          <form class="modern-form" method="POST">
+            {% csrf_token %}
+            <div class="form-grid">
+              <div>
+                <label for="id_productname">Medicine Name</label>
+                <input type="text" name="productname" id="id_productname" value="{{ data.productname }}" required>
+              </div>
+              <div>
+                <label for="id_productquantity">Quantity</label>
+                <input type="number" name="productquantity" id="id_productquantity" value="{{ data.productquantity }}" min="1" required>
+              </div>
+            </div>
+
+            <div class="hero-actions">
+              <button type="submit" class="action-button">Save Changes</button>
+              <a class="action-link secondary" href="{% url 'chemist:ProductListView' %}">Back to Order List</a>
+            </div>
+          </form>
+        </section>
+      </div>
+    </main>
+  </div>
+</body>
+</html>

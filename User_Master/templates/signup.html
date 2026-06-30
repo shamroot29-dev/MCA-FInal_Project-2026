@@ -1,0 +1,105 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Supplier Signup | AI Based Pharmacy System</title>
+  <link rel="stylesheet" type="text/css" href="{% static 'css/project-polish.css' %}">
+</head>
+<body>
+  <main class="auth-page">
+    <form method="POST" class="auth-card auth-card-wide" novalidate>
+      {% csrf_token %}
+      <div class="auth-brand">
+        <div class="auth-eyebrow">Supplier Registration</div>
+        <h1 class="auth-title">Create Supplier Account</h1>
+        <p class="auth-subtitle">Add your profile details to manage pharmacy stock, chemist orders, and billing.</p>
+      </div>
+
+      {% if messages %}
+      <div class="message-stack">
+        {% for message in messages %}
+          <div class="app-alert {{ message.tags }}">{{ message }}</div>
+        {% endfor %}
+      </div>
+      {% endif %}
+
+      {% if obj.errors %}
+      <div class="app-alert error">Please review the highlighted fields below.</div>
+      {% endif %}
+
+      <div class="form-grid">
+        <div class="field">
+          <label for="id_uid">Email</label>
+          <input id="id_uid" type="email" name="uid" value="{{ obj.uid.value|default_if_none:'' }}" required{% if obj.uid.errors %} class="field-invalid" aria-describedby="id_uid_error"{% endif %}>
+          {% if obj.uid.errors %}
+          <div id="id_uid_error" class="field-error">{{ obj.uid.errors.0 }}</div>
+          {% endif %}
+        </div>
+        <div class="field">
+          <label for="id_userpwd">Password</label>
+          <input id="id_userpwd" type="password" name="userpwd" required{% if obj.userpwd.errors %} class="field-invalid" aria-describedby="id_userpwd_error"{% endif %}>
+          {% if obj.userpwd.errors %}
+          <div id="id_userpwd_error" class="field-error">{{ obj.userpwd.errors.0 }}</div>
+          {% endif %}
+        </div>
+        <div class="field">
+          <label for="id_userfname">First Name</label>
+          <input id="id_userfname" type="text" name="userfname" value="{{ obj.userfname.value|default_if_none:'' }}" required{% if obj.userfname.errors %} class="field-invalid" aria-describedby="id_userfname_error"{% endif %}>
+          {% if obj.userfname.errors %}
+          <div id="id_userfname_error" class="field-error">{{ obj.userfname.errors.0 }}</div>
+          {% endif %}
+        </div>
+        <div class="field">
+          <label for="id_usermname">Middle Name <span class="field-optional">(Optional)</span></label>
+          <input id="id_usermname" type="text" name="usermname" value="{{ obj.usermname.value|default_if_none:'' }}"{% if obj.usermname.errors %} class="field-invalid" aria-describedby="id_usermname_error"{% endif %}>
+          {% if obj.usermname.errors %}
+          <div id="id_usermname_error" class="field-error">{{ obj.usermname.errors.0 }}</div>
+          {% endif %}
+        </div>
+        <div class="field">
+          <label for="id_userlname">Last Name</label>
+          <input id="id_userlname" type="text" name="userlname" value="{{ obj.userlname.value|default_if_none:'' }}" required{% if obj.userlname.errors %} class="field-invalid" aria-describedby="id_userlname_error"{% endif %}>
+          {% if obj.userlname.errors %}
+          <div id="id_userlname_error" class="field-error">{{ obj.userlname.errors.0 }}</div>
+          {% endif %}
+        </div>
+        <div class="field">
+          <label for="id_useraddress">Address</label>
+          <input id="id_useraddress" type="text" name="useraddress" value="{{ obj.useraddress.value|default_if_none:'' }}" required{% if obj.useraddress.errors %} class="field-invalid" aria-describedby="id_useraddress_error"{% endif %}>
+          {% if obj.useraddress.errors %}
+          <div id="id_useraddress_error" class="field-error">{{ obj.useraddress.errors.0 }}</div>
+          {% endif %}
+        </div>
+        <div class="field">
+          <label for="id_usercity">City</label>
+          <input id="id_usercity" type="text" name="usercity" value="{{ obj.usercity.value|default_if_none:'' }}" required{% if obj.usercity.errors %} class="field-invalid" aria-describedby="id_usercity_error"{% endif %}>
+          {% if obj.usercity.errors %}
+          <div id="id_usercity_error" class="field-error">{{ obj.usercity.errors.0 }}</div>
+          {% endif %}
+        </div>
+        <div class="field">
+          <label for="id_userpincode">Pincode</label>
+          <input id="id_userpincode" type="number" name="userpincode" value="{{ obj.userpincode.value|default_if_none:'' }}" required{% if obj.userpincode.errors %} class="field-invalid" aria-describedby="id_userpincode_error"{% endif %}>
+          {% if obj.userpincode.errors %}
+          <div id="id_userpincode_error" class="field-error">{{ obj.userpincode.errors.0 }}</div>
+          {% endif %}
+        </div>
+        <div class="field">
+          <label for="id_usercontactno">Contact Number</label>
+          <input id="id_usercontactno" type="number" name="usercontactno" value="{{ obj.usercontactno.value|default_if_none:'' }}" required{% if obj.usercontactno.errors %} class="field-invalid" aria-describedby="id_usercontactno_error"{% endif %}>
+          {% if obj.usercontactno.errors %}
+          <div id="id_usercontactno_error" class="field-error">{{ obj.usercontactno.errors.0 }}</div>
+          {% endif %}
+        </div>
+      </div>
+
+      <div class="action-row">
+        <button type="submit" class="auth-submit">Create Account</button>
+        <a class="btn-secondary-soft" href="{% url 'user:signin' %}">Already have an account?</a>
+      </div>
+    </form>
+  </main>
+</body>
+</html>

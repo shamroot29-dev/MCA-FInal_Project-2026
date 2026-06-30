@@ -1,0 +1,188 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AI Demand Forecasting | AI Based Pharmacy System</title>
+  <link rel="stylesheet" type="text/css" href="{% static 'css/project-polish.css' %}">
+</head>
+<body>
+  <div class="app-shell">
+    <aside class="app-sidebar">
+      <div class="app-brand">
+        <div class="app-brand-mark">U</div>
+        <div>
+          <p class="app-brand-title">AI Based Pharmacy System</p>
+          <p class="app-brand-subtitle">Supplier workspace</p>
+        </div>
+      </div>
+      <nav class="app-nav" aria-label="Supplier navigation">
+        <a href="{% url 'user:adminDashboard' %}"><span class="nav-dot">D</span>Dashboard</a>
+        <a href="{% url 'user:viewstock' %}"><span class="nav-dot">S</span>Stock</a>
+        <a href="{% url 'user:confirm_order' %}"><span class="nav-dot">O</span>Orders</a>
+        <a class="active" href="{% url 'user:createGraph' %}"><span class="nav-dot">A</span>AI Forecast</a>
+        <a class="logout-link" href="{% url 'user:logout' %}"><span class="nav-dot">L</span>Logout</a>
+      </nav>
+    </aside>
+
+    <main class="app-main">
+      <header class="app-topbar">
+        <div>
+          <p class="topbar-kicker">Supplier portal</p>
+          <h1 class="topbar-title">AI Demand Forecasting</h1>
+        </div>
+      </header>
+
+      <div class="app-content">
+        <section class="hero-panel">
+          <div class="hero-card">
+            <p class="hero-eyebrow">Forecasting</p>
+            <h2 class="hero-title">Estimate monthly medicine demand and suggested stock.</h2>
+            <p class="hero-text">Select chemist, product, target month, and year. The system studies generated bill history, predicts expected demand, and recommends how much stock should be available.</p>
+          </div>
+          <div class="notice-card">
+            <h3>How result works</h3>
+            <p>With enough monthly data, trend regression is used. With limited history, the page uses average demand and shows lower confidence instead of overfitting weak data.</p>
+          </div>
+        </section>
+
+        <section class="content-card">
+          <div class="card-heading">
+            <div>
+              <h2>AI Forecast Inputs</h2>
+              <p>Choose values and submit to generate a month-wise stock recommendation.</p>
+            </div>
+          </div>
+
+          <form class="modern-form" method="POST">
+            {% csrf_token %}
+            <div class="form-grid">
+              <div>
+                <label for="store">Store</label>
+                <select name="store" id="store" required>
+                  <option disabled{% if not selected_store %} selected{% endif %}>Select Store</option>
+                  {% for store_item in store %}
+                  <option value="{{ store_item.cid }}"{% if store_item.cid == selected_store %} selected{% endif %}>{{ store_item.chemistfname }} - {{ store_item.cid }}</option>
+                  {% endfor %}
+                </select>
+              </div>
+              <div>
+                <label for="product">Product</label>
+                <select name="product" id="product" required>
+                  <option disabled{% if not selected_product %} selected{% endif %}>Select Product</option>
+                  {% for p in product %}
+                  <option value="{{ p }}"{% if p == selected_product %} selected{% endif %}>{{ p }}</option>
+                  {% endfor %}
+                </select>
+              </div>
+              <div>
+                <label for="month">Target Month</label>
+                <select name="month" id="month" required>
+                  <option disabled{% if not month %} selected{% endif %}>Select Month</option>
+                  {% for month_no, month_name in months %}
+                  <option value="{{ month_no }}"{% if month_no == month %} selected{% endif %}>{{ month_name }}</option>
+                  {% endfor %}
+                </select>
+              </div>
+              <div>
+                <label for="year">Target Year</label>
+                <select name="year" id="year" required>
+                  <option disabled{% if not year %} selected{% endif %}>Select Year</option>
+                  {% for y in years %}
+                  <option value="{{ y }}"{% if y == year %} selected{% endif %}>{{ y }}</option>
+                  {% endfor %}
+                </select>
+              </div>
+            </div>
+            <div class="hero-actions">
+              <button type="submit" class="action-button">Predict Demand</button>
+            </div>
+          </form>
+        </section>
+
+        {% if no_data %}
+        <div class="app-alert warning">No sales data is available for this store and product combination.</div>
+        {% endif %}
+
+        {% if prediction != None %}
+        <section class="metric-grid">
+          <div class="metric-card">
+            <p class="metric-label">Predicted demand</p>
+            <p class="metric-value">{{ prediction }}</p>
+          </div>
+          <div class="metric-card">
+            <p class="metric-label">Suggested stock</p>
+            <p class="metric-value">{{ suggested_stock }}</p>
+          </div>
+          <div class="metric-card">
+            <p class="metric-label">Need to add</p>
+            <p class="metric-value">{{ need_to_add }}</p>
+          </div>
+        </section>
+
+        <section class="metric-grid">
+          <div class="metric-card">
+            <p class="metric-label">Current supplier stock</p>
+            <p class="metric-value">{{ current_stock }}</p>
+          </div>
+          <div class="metric-card">
+            <p class="metric-label">Confidence</p>
+            <p class="metric-value" style="font-size: 22px;"><span class="status-pill {{ confidence_class }}">{{ confidence }}</span></p>
+          </div>
+          <div class="metric-card">
+            <p class="metric-label">Method</p>
+            <p class="metric-value" style="font-size: 18px;">{{ method }}</p>
+          </div>
+        </section>
+
+        <section class="content-card">
+          <div class="card-heading">
+            <div>
+              <h2>AI Forecast Result</h2>
+              <p>Selected store: {{ s }} | Product: {{ p }} | Target month: {{ target_label }}</p>
+            </div>
+          </div>
+
+          <div class="notice-card" style="margin-bottom: 18px;">
+            <h3>Recommendation Summary</h3>
+            <p>{{ explanation }}</p>
+            <p>Bill records used: {{ record_count }} | Active months found: {{ month_count }} | Last bill date: {{ last_bill_date }}</p>
+            <p>Suggested stock includes a 10% safety buffer over predicted demand.</p>
+          </div>
+
+          <div class="table-shell">
+            <table class="data-table">
+              <thead>
+                <tr>
+                  <th>Month</th>
+                  <th>Billed Quantity</th>
+                </tr>
+              </thead>
+              <tbody>
+                {% for d in data %}
+                <tr>
+                  <td>{{ d.period }}</td>
+                  <td>{{ d.quantity }}</td>
+                </tr>
+                {% endfor %}
+                <tr>
+                  <td><strong>Predicted {{ target_label }}</strong></td>
+                  <td><strong>{{ prediction }}</strong></td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+          {% if plot_div %}
+          <div class="responsive-card" style="margin-top: 18px;">
+            {% autoescape off %}{{ plot_div }}{% endautoescape %}
+          </div>
+          {% endif %}
+        </section>
+        {% endif %}
+      </div>
+    </main>
+  </div>
+</body>
+</html>

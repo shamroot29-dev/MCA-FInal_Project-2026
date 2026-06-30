@@ -1,0 +1,109 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Add Medicine Stock | AI Based Pharmacy System</title>
+  <link rel="stylesheet" type="text/css" href="{% static 'css/project-polish.css' %}">
+</head>
+<body>
+  <div class="app-shell">
+    <aside class="app-sidebar">
+      <div class="app-brand">
+        <div class="app-brand-mark">U</div>
+        <div>
+          <p class="app-brand-title">AI Based Pharmacy System</p>
+          <p class="app-brand-subtitle">Supplier workspace</p>
+        </div>
+      </div>
+      <nav class="app-nav" aria-label="Supplier navigation">
+        <a href="{% url 'user:adminDashboard' %}"><span class="nav-dot">D</span>Dashboard</a>
+        <a class="active" href="{% url 'user:viewstock' %}"><span class="nav-dot">S</span>Stock</a>
+        <a href="{% url 'user:confirm_order' %}"><span class="nav-dot">O</span>Orders</a>
+        <a href="{% url 'user:createGraph' %}"><span class="nav-dot">A</span>AI Forecast</a>
+        <a class="logout-link" href="{% url 'user:logout' %}"><span class="nav-dot">L</span>Logout</a>
+      </nav>
+    </aside>
+
+    <main class="app-main">
+      <header class="app-topbar">
+        <div>
+          <p class="topbar-kicker">Supplier portal</p>
+          <h1 class="topbar-title">Add Medicine</h1>
+        </div>
+      </header>
+
+      <div class="app-content">
+        {% if messages %}
+        <div class="message-stack">
+          {% for message in messages %}
+          <div class="app-alert {{ message.tags }}">{{ message }}</div>
+          {% endfor %}
+        </div>
+        {% endif %}
+
+        <section class="hero-panel">
+          <div class="hero-card">
+            <p class="hero-eyebrow">Stock entry</p>
+            <h2 class="hero-title">Add new medicine stock or increase quantity for an existing medicine.</h2>
+            <p class="hero-text">If the medicine name already exists, the entered quantity will be added to current stock and the rate will be updated.</p>
+          </div>
+
+          <div class="notice-card">
+            <h3>Entry rules</h3>
+            <ul class="notice-list">
+              <li>Medicine name should be unique and clear.</li>
+              <li>Quantity and rate must be greater than zero.</li>
+              <li>Chemist order dropdown updates from this stock list.</li>
+            </ul>
+          </div>
+        </section>
+
+        <section class="content-card">
+          <div class="card-heading">
+            <div>
+              <h2>Medicine Stock Details</h2>
+              <p>Enter quantity and rate carefully. Net price is calculated on the stock list page.</p>
+            </div>
+          </div>
+
+          <form class="modern-form" method="POST">
+            {% csrf_token %}
+            <div class="form-grid">
+              <div>
+                <label for="id_productName">Medicine Name</label>
+                <input type="text" name="productName" id="id_productName" value="{{ form_data.productName }}" placeholder="Example: Paracetamol" required{% if errors.productName %} class="field-invalid" aria-describedby="id_productName_error"{% endif %}>
+                {% if errors.productName %}
+                <div id="id_productName_error" class="field-error">{{ errors.productName }}</div>
+                {% endif %}
+              </div>
+
+              <div>
+                <label for="id_quantity">Quantity</label>
+                <input type="number" name="quantity" id="id_quantity" value="{{ form_data.quantity }}" min="1" placeholder="Example: 100" required{% if errors.quantity %} class="field-invalid" aria-describedby="id_quantity_error"{% endif %}>
+                {% if errors.quantity %}
+                <div id="id_quantity_error" class="field-error">{{ errors.quantity }}</div>
+                {% endif %}
+              </div>
+
+              <div>
+                <label for="id_price">Rate</label>
+                <input type="number" name="price" id="id_price" value="{{ form_data.price }}" min="1" step="0.01" placeholder="Example: 25.50" required{% if errors.price %} class="field-invalid" aria-describedby="id_price_error"{% endif %}>
+                {% if errors.price %}
+                <div id="id_price_error" class="field-error">{{ errors.price }}</div>
+                {% endif %}
+              </div>
+            </div>
+
+            <div class="hero-actions">
+              <button type="submit" class="action-button">Add Medicine</button>
+              <a class="action-link secondary" href="{% url 'user:viewstock' %}">Back to Stock</a>
+            </div>
+          </form>
+        </section>
+      </div>
+    </main>
+  </div>
+</body>
+</html>

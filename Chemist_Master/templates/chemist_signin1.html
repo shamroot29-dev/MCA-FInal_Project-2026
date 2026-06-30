@@ -1,0 +1,50 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Chemist Login | AI Based Pharmacy System</title>
+  <link rel="stylesheet" type="text/css" href="{% static 'css/project-polish.css' %}">
+</head>
+<body>
+  <main class="auth-page">
+    <form class="auth-card" method="POST" novalidate>
+      {% csrf_token %}
+      <div class="auth-brand">
+        <div class="auth-eyebrow">Chemist Portal</div>
+        <h1 class="auth-title">Store Login</h1>
+        <p class="auth-subtitle">Access stock ordering, order status, and generated bill details.</p>
+      </div>
+
+      {% if messages %}
+      <div class="message-stack">
+        {% for message in messages %}
+          <div class="app-alert {{ message.tags }}">{{ message }}</div>
+        {% endfor %}
+      </div>
+      {% endif %}
+
+      <div class="field">
+        <label for="id_cid">Email</label>
+        <input id="id_cid" type="email" name="cid" value="{{ cid }}" placeholder="chemist@example.com" required>
+      </div>
+
+      <div class="field">
+        <label for="id_chemistpwd">Password</label>
+        <input id="id_chemistpwd" type="password" name="chemistpwd" placeholder="Enter password" required>
+      </div>
+
+      <div class="action-row">
+        <button class="auth-submit" type="submit">Sign In</button>
+        <a class="btn-secondary-soft" href="{% url 'chemist:ch_signup' %}">Create Chemist Account</a>
+      </div>
+
+      <div class="action-row">
+        <a href="{% url 'chemist:forgotpass' %}">Forgot password?</a>
+        <a href="{% url 'user:index' %}">Back to Home</a>
+      </div>
+    </form>
+  </main>
+</body>
+</html>

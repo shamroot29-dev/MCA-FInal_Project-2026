@@ -1,0 +1,41 @@
+node_modules/
+
+# Python
+__pycache__/
+*.py[cod]
+*.sqlite3-journal
+
+# Local virtual environments
+.venv/
+venv/
+env/
+myenv/
+myenv1/
+
+# OS/editor noise
+.DS_Store
+.vscode/
+.env
+.env.local
+
+# Runtime/generated files
+staticfiles/
+media/
+db.sqlite3
+
+# Generated reports and local browser automation profiles
+reports/
+
+# Local project/report artifacts that should not be committed to GitHub
+*.doc
+*.docx
+*.pdf
+*.pptx
+*.vsdx
+*.pub
+*.zip
+sample format/
+
+# Root-level exported images/diagrams
+1.jpg
+er.jpg
